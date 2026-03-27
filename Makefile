@@ -19,6 +19,7 @@ all: \
 	r \
 	ruby \
 	rust \
+	scala \
 	scheme \
 	tcl \
 	typescript \
@@ -46,6 +47,7 @@ deps:
 			python3 \
 			ruby \
 			node-typescript \
+			scala \
 			valac \
 			r-base \
 			rustc \
@@ -71,6 +73,7 @@ deps:
 			python3 \
 			R \
 			ruby \
+			scala \
 			typescript \
 			vala \
 			rust \
@@ -97,6 +100,7 @@ run: all
 	bin/howdy-r
 	bin/howdy-ruby
 	bin/howdy-rust
+	bin/howdy-scala
 	bin/howdy-scheme
 	bin/howdy-tcl
 	bin/howdy-typescript
@@ -120,6 +124,7 @@ test: \
 	test-r \
 	test-ruby \
 	test-rust \
+	test-scala \
 	test-scheme \
 	test-tcl \
 	test-typescript \
@@ -145,6 +150,7 @@ install: all
 		bin/howdy-r \
 		bin/howdy-ruby \
 		bin/howdy-rust \
+		bin/howdy-scala \
 		bin/howdy-scheme \
 		bin/howdy-tcl \
 		bin/howdy-typescript \
@@ -180,6 +186,7 @@ install: all
 	r \
 	ruby \
 	rust \
+	scala \
 	scheme \
 	tcl \
 	typescript \
@@ -203,6 +210,7 @@ install: all
 	test-r \
 	test-ruby \
 	test-rust \
+	test-scala \
 	test-scheme \
 	test-tcl \
 	test-typescript \
@@ -300,6 +308,14 @@ ruby: | bin
 	cp ruby/howdy.rb bin/howdy-ruby
 	sed -i '1s|.*|#!/usr/bin/env ruby|' bin/howdy-ruby
 	chmod 755 bin/howdy-ruby
+
+scala: | bin
+	mkdir -p bin/scala
+	JAVA_HOME=$$(dirname $$(dirname $$(readlink -f $$(which java)))) scalac -d bin/scala scala/howdy.scala
+	echo '#!/bin/sh'                                         > bin/howdy-scala
+	echo 'D=$$(cd "$$(dirname "$$0")" && pwd)'               >> bin/howdy-scala
+	echo 'exec java -cp "$$D/scala" Howdy'                   >> bin/howdy-scala
+	chmod 755 bin/howdy-scala
 
 vala: | bin
 	valac vala/howdy.vala -o bin/howdy-vala
@@ -413,6 +429,10 @@ test-tcl: tcl
 test-typescript: typescript
 	bin/howdy-typescript | grep -q "TypeScript: Howdy!"
 	@echo "PASS: typescript"
+
+test-scala: scala
+	bin/howdy-scala | grep -q "Scala: Howdy!"
+	@echo "PASS: scala"
 
 test-vala: vala
 	bin/howdy-vala | grep -q "Vala: Howdy!"
