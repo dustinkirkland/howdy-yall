@@ -12,8 +12,5 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-
-      - uses: wolfi-dev/wolfi-act@main
-        with:
-          packages: build-base,bash,erlang,gfortran,go,default-jdk,nodejs,perl,php,python3,ruby,rust
-          command: make test
+      - run: make deps
+      - run: make test
