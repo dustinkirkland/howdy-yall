@@ -1,7 +1,7 @@
 PREFIX  ?= /usr/local
 DESTDIR ?=
 
-all: bash c cpp erlang fortran golang java nodejs perl php python ruby rust
+all: bash c cpp erlang fortran go java node perl php python ruby rust
 
 deps:
 	# install build dependencies, detecting distro and package manager
@@ -32,7 +32,7 @@ run: all
 	bin/howdy-ruby
 	bin/howdy-rust
 
-test: test-bash test-c test-cpp test-erlang test-fortran test-golang test-java test-nodejs test-perl test-php test-python test-ruby test-rust
+test: test-bash test-c test-cpp test-erlang test-fortran test-go test-java test-node test-perl test-php test-python test-ruby test-rust
 	@echo ""
 	@echo "All tests passed!"
 
@@ -55,9 +55,9 @@ install: all
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-java
 
 .PHONY: all deps run test install clean
-.PHONY: bash c cpp erlang fortran golang java nodejs perl php python ruby rust
+.PHONY: bash c cpp erlang fortran go java node perl php python ruby rust
 .PHONY: haskell lisp pascal
-.PHONY: test-bash test-c test-cpp test-erlang test-fortran test-golang test-java test-nodejs test-perl test-php test-python test-ruby test-rust
+.PHONY: test-bash test-c test-cpp test-erlang test-fortran test-go test-java test-node test-perl test-php test-python test-ruby test-rust
 
 clean:
 	rm -rf bin/
@@ -78,8 +78,8 @@ cpp: | bin
 fortran: | bin
 	gfortran -o bin/howdy-fortran fortran/howdy.f90
 
-golang: | bin
-	go build -o bin/howdy-go golang/howdy.go
+go: | bin
+	go build -o bin/howdy-go go/howdy.go
 
 rust: | bin
 	rustc rust/howdy.rs -o bin/howdy-rust
@@ -114,8 +114,8 @@ bash: | bin
 	sed -i '1s|.*|#!/bin/bash|' bin/howdy-bash
 	chmod 755 bin/howdy-bash
 
-nodejs: | bin
-	cp nodejs/howdy.js bin/howdy-node
+node: | bin
+	cp node/howdy.js bin/howdy-node
 	sed -i '1i #!/usr/bin/env node' bin/howdy-node
 	chmod 755 bin/howdy-node
 
@@ -165,17 +165,17 @@ test-fortran: fortran
 	bin/howdy-fortran | grep -q "Fortran: Howdy!"
 	@echo "PASS: fortran"
 
-test-golang: golang
+test-go: go
 	bin/howdy-go | grep -q "Golang: Howdy!"
-	@echo "PASS: golang"
+	@echo "PASS: go"
 
 test-java: java
 	bin/howdy-java | grep -q "Java: Howdy!"
 	@echo "PASS: java"
 
-test-nodejs: nodejs
+test-node: node
 	bin/howdy-node | grep -q "NodeJS: Howdy!"
-	@echo "PASS: nodejs"
+	@echo "PASS: node"
 
 test-perl: perl
 	bin/howdy-perl | grep -q "Perl: Howdy!"
