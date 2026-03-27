@@ -20,7 +20,8 @@ all: \
 	ruby \
 	rust \
 	scheme \
-	tcl
+	tcl \
+	typescript
 
 deps:
 	# install build dependencies, detecting distro and package manager
@@ -43,6 +44,7 @@ deps:
 			php-cli \
 			python3 \
 			ruby \
+			node-typescript \
 			r-base \
 			rustc \
 			tcl \
@@ -67,6 +69,7 @@ deps:
 			python3 \
 			R \
 			ruby \
+			typescript \
 			rust \
 			tcl; \
 	else \
@@ -93,6 +96,7 @@ run: all
 	bin/howdy-rust
 	bin/howdy-scheme
 	bin/howdy-tcl
+	bin/howdy-typescript
 
 test: \
 	test-asm \
@@ -113,7 +117,8 @@ test: \
 	test-ruby \
 	test-rust \
 	test-scheme \
-	test-tcl
+	test-tcl \
+	test-typescript
 	@echo ""
 	@echo "All tests passed!"
 
@@ -137,6 +142,7 @@ install: all
 		bin/howdy-rust \
 		bin/howdy-scheme \
 		bin/howdy-tcl \
+		bin/howdy-typescript \
 		$(DESTDIR)$(PREFIX)/bin/
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/erlang
 	install -m644 bin/howdy.beam $(DESTDIR)$(PREFIX)/share/howdy/erlang/howdy.beam
@@ -169,7 +175,8 @@ install: all
 	ruby \
 	rust \
 	scheme \
-	tcl
+	tcl \
+	typescript
 .PHONY: haskell lisp pascal
 .PHONY: \
 	test-asm \
@@ -190,7 +197,8 @@ install: all
 	test-ruby \
 	test-rust \
 	test-scheme \
-	test-tcl
+	test-tcl \
+	test-typescript
 
 clean:
 	rm -rf bin/
@@ -284,6 +292,14 @@ ruby: | bin
 	cp ruby/howdy.rb bin/howdy-ruby
 	sed -i '1s|.*|#!/usr/bin/env ruby|' bin/howdy-ruby
 	chmod 755 bin/howdy-ruby
+
+typescript: | bin
+	mkdir -p bin/typescript
+	tsc typescript/howdy.ts --outDir bin/typescript
+	echo '#!/bin/sh'                                                                     > bin/howdy-typescript
+	echo 'D=$$(cd "$$(dirname "$$0")" && pwd)'                                           >> bin/howdy-typescript
+	echo 'exec node "$$D/typescript/howdy.js"'                                           >> bin/howdy-typescript
+	chmod 755 bin/howdy-typescript
 
 r: | bin
 	cp r/howdy.R bin/howdy-r
@@ -382,3 +398,7 @@ test-scheme: scheme
 test-tcl: tcl
 	bin/howdy-tcl | grep -q "Tcl: Howdy!"
 	@echo "PASS: tcl"
+
+test-typescript: typescript
+	bin/howdy-typescript | grep -q "TypeScript: Howdy!"
+	@echo "PASS: typescript"
