@@ -7,6 +7,7 @@ all: \
 	busybox \
 	c \
 	cpp \
+	csharp \
 	dash \
 	erlang \
 	fish \
@@ -62,6 +63,7 @@ deps:
 			tcl \
 			yash \
 			zsh \
+			dotnet-sdk-8.0 \
 			ghc \
 			clisp \
 			fp-compiler; \
@@ -85,6 +87,7 @@ deps:
 			perl \
 			php \
 			dart \
+			dotnet-8-sdk \
 			powershell \
 			python3 \
 			R \
@@ -104,6 +107,7 @@ run: all
 	bin/howdy-busybox
 	bin/howdy-c
 	bin/howdy-cpp
+	bin/howdy-csharp
 	bin/howdy-dash
 	bin/howdy-erlang
 	bin/howdy-fish
@@ -132,6 +136,7 @@ test: \
 	test-busybox \
 	test-c \
 	test-cpp \
+	test-csharp \
 	test-dash \
 	test-erlang \
 	test-fish \
@@ -176,6 +181,7 @@ test-install:
 	/tmp/howdy-install/bin/howdy-busybox    | grep -q "BusyBox: Howdy!"
 	/tmp/howdy-install/bin/howdy-c          | grep -q "C: Howdy!"
 	/tmp/howdy-install/bin/howdy-cpp        | grep -q "C++: Howdy!"
+	/tmp/howdy-install/bin/howdy-csharp     | grep -q "C#: Howdy!"
 	/tmp/howdy-install/bin/howdy-dash       | grep -q "Dash: Howdy!"
 	/tmp/howdy-install/bin/howdy-erlang     | grep -q "Erlang: Howdy!"
 	/tmp/howdy-install/bin/howdy-fish       | grep -q "Fish: Howdy!"
@@ -208,6 +214,7 @@ install: all
 		bin/howdy-busybox \
 		bin/howdy-c \
 		bin/howdy-cpp \
+		bin/howdy-csharp \
 		bin/howdy-dash \
 		bin/howdy-fish \
 		bin/howdy-fortran \
@@ -251,6 +258,7 @@ install: all
 	busybox \
 	c \
 	cpp \
+	csharp \
 	dash \
 	erlang \
 	fish \
@@ -281,6 +289,7 @@ install: all
 	test-busybox \
 	test-c \
 	test-cpp \
+	test-csharp \
 	test-dash \
 	test-erlang \
 	test-fish \
@@ -331,6 +340,16 @@ c: | bin
 
 cpp: | bin
 	g++ -o bin/howdy-cpp cpp/howdy.cpp
+
+csharp: | bin
+	dotnet publish csharp/howdy.csproj \
+		-c Release \
+		--self-contained \
+		-r linux-x64 \
+		-p:PublishSingleFile=true \
+		-o /tmp/howdy-csharp
+	cp /tmp/howdy-csharp/howdy bin/howdy-csharp
+	chmod 755 bin/howdy-csharp
 
 fortran: | bin
 	gfortran -o bin/howdy-fortran fortran/howdy.f90
@@ -499,6 +518,10 @@ test-c: c
 test-cpp: cpp
 	bin/howdy-cpp | grep -q "C++: Howdy!"
 	@echo "PASS: cpp"
+
+test-csharp: csharp
+	bin/howdy-csharp | grep -q "C#: Howdy!"
+	@echo "PASS: csharp"
 
 test-dash: dash
 	bin/howdy-dash | grep -q "Dash: Howdy!"
