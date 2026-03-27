@@ -1,18 +1,18 @@
 PREFIX  ?= /usr/local
 DESTDIR ?=
 
-all: asm bash c cpp erlang fortran go java node perl php python ruby rust
+all: asm bash c cpp erlang fortran go java lua node perl php python ruby rust
 
 deps:
 	# install build dependencies, detecting distro and package manager
 	@if command -v apt-get >/dev/null 2>&1; then \
 		sudo apt-get update; \
 		sudo apt-get install -y \
-			gcc g++ erlang gfortran golang-go default-jdk nodejs perl php-cli python3 ruby rustc bash \
+			gcc g++ erlang gfortran golang-go default-jdk nodejs perl php-cli python3 ruby rustc bash lua5.4 \
 			nasm ghc clisp fp-compiler; \
 	elif command -v apk >/dev/null 2>&1; then \
 		apk add --no-cache \
-			build-base bash erlang gfortran go default-jdk nodejs perl php python3 ruby rust \
+			build-base bash erlang gfortran go default-jdk nodejs perl php python3 ruby rust lua5.4 \
 			nasm; \
 	else \
 		echo "Unsupported distro: no apt-get or apk found"; exit 1; \
@@ -27,6 +27,7 @@ run: all
 	bin/howdy-fortran
 	bin/howdy-go
 	bin/howdy-java
+	bin/howdy-lua
 	bin/howdy-node
 	bin/howdy-perl
 	bin/howdy-php
@@ -34,7 +35,7 @@ run: all
 	bin/howdy-ruby
 	bin/howdy-rust
 
-test: test-asm test-bash test-c test-cpp test-erlang test-fortran test-go test-java test-node test-perl test-php test-python test-ruby test-rust
+test: test-asm test-bash test-c test-cpp test-erlang test-fortran test-go test-java test-lua test-node test-perl test-php test-python test-ruby test-rust
 	@echo ""
 	@echo "All tests passed!"
 
@@ -42,7 +43,7 @@ install: all
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install -m755 \
 		bin/howdy-bash bin/howdy-c bin/howdy-cpp bin/howdy-fortran \
-		bin/howdy-go bin/howdy-node bin/howdy-perl bin/howdy-php \
+		bin/howdy-go bin/howdy-lua bin/howdy-node bin/howdy-perl bin/howdy-php \
 		bin/howdy-python bin/howdy-ruby bin/howdy-rust \
 		$(DESTDIR)$(PREFIX)/bin/
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/erlang
@@ -57,9 +58,9 @@ install: all
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-java
 
 .PHONY: all deps run test install clean
-.PHONY: asm bash c cpp erlang fortran go java node perl php python ruby rust
+.PHONY: asm bash c cpp erlang fortran go java lua node perl php python ruby rust
 .PHONY: haskell lisp pascal
-.PHONY: test-asm test-bash test-c test-cpp test-erlang test-fortran test-go test-java test-node test-perl test-php test-python test-ruby test-rust
+.PHONY: test-asm test-bash test-c test-cpp test-erlang test-fortran test-go test-java test-lua test-node test-perl test-php test-python test-ruby test-rust
 
 clean:
 	rm -rf bin/
@@ -146,6 +147,11 @@ ruby: | bin
 	sed -i '1s|.*|#!/usr/bin/env ruby|' bin/howdy-ruby
 	chmod 755 bin/howdy-ruby
 
+lua: | bin
+	cp lua/howdy.lua bin/howdy-lua
+	sed -i '1i #!/usr/bin/env lua5.4' bin/howdy-lua
+	chmod 755 bin/howdy-lua
+
 # optional script languages (not in 'all')
 lisp:
 	clisp lisp/howdy.lisp
@@ -183,6 +189,10 @@ test-go: go
 test-java: java
 	bin/howdy-java | grep -q "Java: Howdy!"
 	@echo "PASS: java"
+
+test-lua: lua
+	bin/howdy-lua | grep -q "Lua: Howdy!"
+	@echo "PASS: lua"
 
 test-node: node
 	bin/howdy-node | grep -q "NodeJS: Howdy!"
