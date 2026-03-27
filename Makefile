@@ -4,12 +4,16 @@ DESTDIR ?=
 all: \
 	asm \
 	bash \
+	busybox \
 	c \
 	cpp \
+	dash \
 	erlang \
+	fish \
 	fortran \
 	go \
 	java \
+	ksh \
 	lua \
 	node \
 	ocaml \
@@ -23,7 +27,8 @@ all: \
 	scheme \
 	tcl \
 	typescript \
-	vala
+	vala \
+	zsh
 
 deps:
 	# install build dependencies, detecting distro and package manager
@@ -31,14 +36,19 @@ deps:
 		sudo apt-get update; \
 		sudo apt-get install -y \
 			bash \
+			busybox \
+			dash \
 			erlang \
+			fish \
 			gcc \
 			g++ \
 			gfortran \
 			golang-go \
 			default-jdk \
 			guile-3.0 \
+			ksh \
 			lua5.4 \
+			mksh \
 			nasm \
 			nodejs \
 			ocaml \
@@ -52,6 +62,8 @@ deps:
 			r-base \
 			rustc \
 			tcl \
+			yash \
+			zsh \
 			ghc \
 			clisp \
 			fp-compiler; \
@@ -59,25 +71,31 @@ deps:
 		apk add --no-cache \
 			bash \
 			build-base \
+			busybox \
+			dash \
 			erlang \
+			fish \
 			gfortran \
 			go \
 			default-jdk \
 			guile \
+			ksh \
 			lua5.4 \
 			nasm \
 			nodejs \
 			ocaml \
 			perl \
 			php \
+			powershell \
 			python3 \
 			R \
 			ruby \
 			scala \
+			rust \
+			tcl \
 			typescript \
 			vala \
-			rust \
-			tcl; \
+			zsh; \
 	else \
 		echo "Unsupported distro: no apt-get or apk found"; exit 1; \
 	fi
@@ -85,12 +103,16 @@ deps:
 run: all
 	bin/howdy-asm
 	bin/howdy-bash
+	bin/howdy-busybox
 	bin/howdy-c
 	bin/howdy-cpp
+	bin/howdy-dash
 	bin/howdy-erlang
+	bin/howdy-fish
 	bin/howdy-fortran
 	bin/howdy-go
 	bin/howdy-java
+	bin/howdy-ksh
 	bin/howdy-lua
 	bin/howdy-node
 	bin/howdy-ocaml
@@ -105,16 +127,21 @@ run: all
 	bin/howdy-tcl
 	bin/howdy-typescript
 	bin/howdy-vala
+	bin/howdy-zsh
 
 test: \
 	test-asm \
 	test-bash \
+	test-busybox \
 	test-c \
 	test-cpp \
+	test-dash \
 	test-erlang \
+	test-fish \
 	test-fortran \
 	test-go \
 	test-java \
+	test-ksh \
 	test-lua \
 	test-node \
 	test-ocaml \
@@ -128,19 +155,67 @@ test: \
 	test-scheme \
 	test-tcl \
 	test-typescript \
-	test-vala
+	test-vala \
+	test-zsh
 	@echo ""
 	@echo "All tests passed!"
+
+test-only-on-ubuntu: \
+	test-mksh \
+	test-yash
+	@echo ""
+	@echo "All Ubuntu-only tests passed!"
+
+test-only-on-chainguard: \
+	test-pwsh
+	@echo ""
+	@echo "All Chainguard-only tests passed!"
+
+test-install:
+	rm -rf /tmp/howdy-install
+	$(MAKE) install PREFIX=/tmp/howdy-install
+	/tmp/howdy-install/bin/howdy-asm        | grep -q "Assembly: Howdy!"
+	/tmp/howdy-install/bin/howdy-bash       | grep -q "Bash: Howdy!"
+	/tmp/howdy-install/bin/howdy-busybox    | grep -q "BusyBox: Howdy!"
+	/tmp/howdy-install/bin/howdy-c          | grep -q "C: Howdy!"
+	/tmp/howdy-install/bin/howdy-cpp        | grep -q "C++: Howdy!"
+	/tmp/howdy-install/bin/howdy-dash       | grep -q "Dash: Howdy!"
+	/tmp/howdy-install/bin/howdy-erlang     | grep -q "Erlang: Howdy!"
+	/tmp/howdy-install/bin/howdy-fish       | grep -q "Fish: Howdy!"
+	/tmp/howdy-install/bin/howdy-fortran    | grep -q "Fortran: Howdy!"
+	/tmp/howdy-install/bin/howdy-go         | grep -q "Golang: Howdy!"
+	/tmp/howdy-install/bin/howdy-java       | grep -q "Java: Howdy!"
+	/tmp/howdy-install/bin/howdy-ksh        | grep -q "Ksh: Howdy!"
+	/tmp/howdy-install/bin/howdy-lua        | grep -q "Lua: Howdy!"
+	/tmp/howdy-install/bin/howdy-node       | grep -q "NodeJS: Howdy!"
+	/tmp/howdy-install/bin/howdy-ocaml      | grep -q "OCaml: Howdy!"
+	/tmp/howdy-install/bin/howdy-perl       | grep -q "Perl: Howdy!"
+	/tmp/howdy-install/bin/howdy-php        | grep -q "PHP: Howdy!"
+	/tmp/howdy-install/bin/howdy-python     | grep -q "Python: Howdy!"
+	/tmp/howdy-install/bin/howdy-r          | grep -q "R: Howdy!"
+	/tmp/howdy-install/bin/howdy-ruby       | grep -q "Ruby: Howdy!"
+	/tmp/howdy-install/bin/howdy-rust       | grep -q "Rust: Howdy!"
+	/tmp/howdy-install/bin/howdy-scheme     | grep -q "Scheme: Howdy!"
+	/tmp/howdy-install/bin/howdy-tcl        | grep -q "Tcl: Howdy!"
+	/tmp/howdy-install/bin/howdy-typescript | grep -q "TypeScript: Howdy!"
+	/tmp/howdy-install/bin/howdy-vala       | grep -q "Vala: Howdy!"
+	/tmp/howdy-install/bin/howdy-zsh        | grep -q "Zsh: Howdy!"
+	@echo ""
+	@echo "All install tests passed!"
 
 install: all
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install -m755 \
 		bin/howdy-asm \
 		bin/howdy-bash \
+		bin/howdy-busybox \
 		bin/howdy-c \
 		bin/howdy-cpp \
+		bin/howdy-dash \
+		bin/howdy-fish \
 		bin/howdy-fortran \
 		bin/howdy-go \
+		bin/howdy-ksh \
 		bin/howdy-lua \
 		bin/howdy-node \
 		bin/howdy-ocaml \
@@ -152,8 +227,8 @@ install: all
 		bin/howdy-rust \
 		bin/howdy-scheme \
 		bin/howdy-tcl \
-		bin/howdy-typescript \
 		bin/howdy-vala \
+		bin/howdy-zsh \
 		$(DESTDIR)$(PREFIX)/bin/
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/scala
 	install -m644 bin/scala/*.class bin/scala/*.jar $(DESTDIR)$(PREFIX)/share/howdy/scala/
@@ -170,18 +245,29 @@ install: all
 	echo '#!/bin/sh'                                                 > $(DESTDIR)$(PREFIX)/bin/howdy-java
 	echo 'exec java -classpath $(PREFIX)/share/howdy/java Howdy'    >> $(DESTDIR)$(PREFIX)/bin/howdy-java
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-java
+	install -d $(DESTDIR)$(PREFIX)/share/howdy/typescript
+	install -m644 bin/typescript/howdy.js $(DESTDIR)$(PREFIX)/share/howdy/typescript/howdy.js
+	echo '#!/bin/sh'                                                                > $(DESTDIR)$(PREFIX)/bin/howdy-typescript
+	echo 'exec node "$(PREFIX)/share/howdy/typescript/howdy.js"'                   >> $(DESTDIR)$(PREFIX)/bin/howdy-typescript
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-typescript
 
-.PHONY: all deps run test install clean
+.PHONY: all deps run test test-install install clean
+.PHONY: test-only-on-ubuntu test-only-on-chainguard
 .PHONY: \
 	asm \
 	bash \
+	busybox \
 	c \
 	cpp \
+	dash \
 	erlang \
+	fish \
 	fortran \
 	go \
 	java \
+	ksh \
 	lua \
+	mksh \
 	node \
 	ocaml \
 	perl \
@@ -194,18 +280,25 @@ install: all
 	scheme \
 	tcl \
 	typescript \
-	vala
-.PHONY: haskell lisp pascal
+	vala \
+	yash \
+	zsh
+.PHONY: haskell lisp pascal pwsh
 .PHONY: \
 	test-asm \
 	test-bash \
+	test-busybox \
 	test-c \
 	test-cpp \
+	test-dash \
 	test-erlang \
+	test-fish \
 	test-fortran \
 	test-go \
 	test-java \
+	test-ksh \
 	test-lua \
+	test-mksh \
 	test-node \
 	test-ocaml \
 	test-perl \
@@ -218,7 +311,10 @@ install: all
 	test-scheme \
 	test-tcl \
 	test-typescript \
-	test-vala
+	test-vala \
+	test-yash \
+	test-zsh \
+	test-pwsh
 
 clean:
 	rm -rf bin/
@@ -276,12 +372,55 @@ pascal:
 	pc pascal/howdy.pas
 	./pascal/howdy
 
-# --- script languages (copy + fix shebang) ---
+# --- shell languages (all derived from shell/howdy.sh or shell/howdy.ps1) ---
 
 bash: | bin
-	cp bash/howdy.sh bin/howdy-bash
-	sed -i '1s|.*|#!/bin/bash|' bin/howdy-bash
+	cp shell/howdy.sh bin/howdy-bash
+	sed -i '1s|.*|#!/usr/bin/env bash|; s/Shell:/Bash:/' bin/howdy-bash
 	chmod 755 bin/howdy-bash
+
+busybox: | bin
+	cp shell/howdy.sh bin/howdy-busybox
+	sed -i '1s|.*|#!/bin/busybox sh|; s/Shell:/BusyBox:/' bin/howdy-busybox
+	chmod 755 bin/howdy-busybox
+
+dash: | bin
+	cp shell/howdy.sh bin/howdy-dash
+	sed -i '1s|.*|#!/usr/bin/env dash|; s/Shell:/Dash:/' bin/howdy-dash
+	chmod 755 bin/howdy-dash
+
+fish: | bin
+	cp shell/howdy.sh bin/howdy-fish
+	sed -i '1s|.*|#!/usr/bin/env fish|; s/Shell:/Fish:/' bin/howdy-fish
+	chmod 755 bin/howdy-fish
+
+ksh: | bin
+	cp shell/howdy.sh bin/howdy-ksh
+	sed -i '1s|.*|#!/usr/bin/env ksh|; s/Shell:/Ksh:/' bin/howdy-ksh
+	chmod 755 bin/howdy-ksh
+
+mksh: | bin
+	cp shell/howdy.sh bin/howdy-mksh
+	sed -i '1s|.*|#!/usr/bin/env mksh|; s/Shell:/Mksh:/' bin/howdy-mksh
+	chmod 755 bin/howdy-mksh
+
+yash: | bin
+	cp shell/howdy.sh bin/howdy-yash
+	sed -i '1s|.*|#!/usr/bin/env yash|; s/Shell:/Yash:/' bin/howdy-yash
+	chmod 755 bin/howdy-yash
+
+zsh: | bin
+	cp shell/howdy.sh bin/howdy-zsh
+	sed -i '1s|.*|#!/usr/bin/env zsh|; s/Shell:/Zsh:/' bin/howdy-zsh
+	chmod 755 bin/howdy-zsh
+
+# pwsh: Chainguard-only (not in 'all'; tested via test-only-on-chainguard)
+pwsh: | bin
+	cp shell/howdy.ps1 bin/howdy-pwsh
+	sed -i '1i #!/usr/bin/env pwsh' bin/howdy-pwsh
+	chmod 755 bin/howdy-pwsh
+
+# --- other script languages (copy + fix shebang) ---
 
 lua: | bin
 	cp lua/howdy.lua bin/howdy-lua
@@ -360,8 +499,12 @@ test-asm: asm
 	@echo "PASS: asm"
 
 test-bash: bash
-	bin/howdy-bash | grep -q "Shell: Howdy!"
+	bin/howdy-bash | grep -q "Bash: Howdy!"
 	@echo "PASS: bash"
+
+test-busybox: busybox
+	bin/howdy-busybox | grep -q "BusyBox: Howdy!"
+	@echo "PASS: busybox"
 
 test-c: c
 	bin/howdy-c | grep -q "C: Howdy!"
@@ -371,9 +514,17 @@ test-cpp: cpp
 	bin/howdy-cpp | grep -q "C++: Howdy!"
 	@echo "PASS: cpp"
 
+test-dash: dash
+	bin/howdy-dash | grep -q "Dash: Howdy!"
+	@echo "PASS: dash"
+
 test-erlang: erlang
 	bin/howdy-erlang | grep -q "Erlang: Howdy!"
 	@echo "PASS: erlang"
+
+test-fish: fish
+	bin/howdy-fish | grep -q "Fish: Howdy!"
+	@echo "PASS: fish"
 
 test-fortran: fortran
 	bin/howdy-fortran | grep -q "Fortran: Howdy!"
@@ -387,9 +538,17 @@ test-java: java
 	bin/howdy-java | grep -q "Java: Howdy!"
 	@echo "PASS: java"
 
+test-ksh: ksh
+	bin/howdy-ksh | grep -q "Ksh: Howdy!"
+	@echo "PASS: ksh"
+
 test-lua: lua
 	bin/howdy-lua | grep -q "Lua: Howdy!"
 	@echo "PASS: lua"
+
+test-mksh: mksh
+	bin/howdy-mksh | grep -q "Mksh: Howdy!"
+	@echo "PASS: mksh"
 
 test-node: node
 	bin/howdy-node | grep -q "NodeJS: Howdy!"
@@ -442,3 +601,15 @@ test-scala: scala
 test-vala: vala
 	bin/howdy-vala | grep -q "Vala: Howdy!"
 	@echo "PASS: vala"
+
+test-yash: yash
+	bin/howdy-yash | grep -q "Yash: Howdy!"
+	@echo "PASS: yash"
+
+test-zsh: zsh
+	bin/howdy-zsh | grep -q "Zsh: Howdy!"
+	@echo "PASS: zsh"
+
+test-pwsh: pwsh
+	bin/howdy-pwsh | grep -q "PowerShell: Howdy!"
+	@echo "PASS: pwsh"
