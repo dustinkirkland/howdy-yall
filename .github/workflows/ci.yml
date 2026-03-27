@@ -13,10 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update -q
-          sudo apt-get install -y erlang gfortran php-cli ruby
-
-      - name: Run tests
-        run: make test
+      - uses: wolfi-dev/wolfi-act@main
+        with:
+          packages: build-base,bash,erlang,gfortran,go-1.25,default-jdk,nodejs,perl,php,python3,ruby,rust
+          run: make test
