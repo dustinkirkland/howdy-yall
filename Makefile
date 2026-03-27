@@ -15,7 +15,6 @@ all: \
 	java \
 	ksh \
 	lua \
-	mksh \
 	node \
 	ocaml \
 	perl \
@@ -28,7 +27,6 @@ all: \
 	tcl \
 	typescript \
 	vala \
-	yash \
 	zsh
 
 deps:
@@ -79,9 +77,8 @@ deps:
 			go \
 			default-jdk \
 			guile \
-			ksh93 \
+			ksh \
 			lua5.4 \
-			mksh \
 			nasm \
 			nodejs \
 			ocaml \
@@ -95,7 +92,6 @@ deps:
 			tcl \
 			typescript \
 			vala \
-			yash \
 			zsh; \
 	else \
 		echo "Unsupported distro: no apt-get or apk found"; exit 1; \
@@ -115,7 +111,6 @@ run: all
 	bin/howdy-java
 	bin/howdy-ksh
 	bin/howdy-lua
-	bin/howdy-mksh
 	bin/howdy-node
 	bin/howdy-ocaml
 	bin/howdy-perl
@@ -128,7 +123,6 @@ run: all
 	bin/howdy-tcl
 	bin/howdy-typescript
 	bin/howdy-vala
-	bin/howdy-yash
 	bin/howdy-zsh
 
 test: \
@@ -145,7 +139,6 @@ test: \
 	test-java \
 	test-ksh \
 	test-lua \
-	test-mksh \
 	test-node \
 	test-ocaml \
 	test-perl \
@@ -158,13 +151,15 @@ test: \
 	test-tcl \
 	test-typescript \
 	test-vala \
-	test-yash \
 	test-zsh
 	@echo ""
 	@echo "All tests passed!"
 
-test-only-on-ubuntu:
-	@echo "No Ubuntu-only tests currently."
+test-only-on-ubuntu: \
+	test-mksh \
+	test-yash
+	@echo ""
+	@echo "All Ubuntu-only tests passed!"
 
 test-only-on-chainguard: \
 	test-pwsh
@@ -185,7 +180,6 @@ install: all
 		bin/howdy-go \
 		bin/howdy-ksh \
 		bin/howdy-lua \
-		bin/howdy-mksh \
 		bin/howdy-node \
 		bin/howdy-ocaml \
 		bin/howdy-perl \
@@ -198,7 +192,6 @@ install: all
 		bin/howdy-tcl \
 		bin/howdy-typescript \
 		bin/howdy-vala \
-		bin/howdy-yash \
 		bin/howdy-zsh \
 		$(DESTDIR)$(PREFIX)/bin/
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/erlang
