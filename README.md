@@ -55,6 +55,7 @@ Ubuntu and Wolfi/Chainguard.
 | Bash          | `howdy-bash`        | shell    | source: `shell/howdy.sh`                        |
 | BusyBox sh    | `howdy-busybox`     | shell    | source: `shell/howdy.sh`                        |
 | C             | `howdy-c`           | compiled |                                                 |
+| Dart          | `howdy-dart`        | compiled | Chainguard only                                 |
 | C++           | `howdy-cpp`         | compiled |                                                 |
 | Dash          | `howdy-dash`        | shell    | source: `shell/howdy.sh`                        |
 | Erlang        | `howdy-erlang`      | compiled |                                                 |
