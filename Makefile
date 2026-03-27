@@ -21,7 +21,8 @@ all: \
 	rust \
 	scheme \
 	tcl \
-	typescript
+	typescript \
+	vala
 
 deps:
 	# install build dependencies, detecting distro and package manager
@@ -45,6 +46,7 @@ deps:
 			python3 \
 			ruby \
 			node-typescript \
+			valac \
 			r-base \
 			rustc \
 			tcl \
@@ -70,6 +72,7 @@ deps:
 			R \
 			ruby \
 			typescript \
+			vala \
 			rust \
 			tcl; \
 	else \
@@ -97,6 +100,7 @@ run: all
 	bin/howdy-scheme
 	bin/howdy-tcl
 	bin/howdy-typescript
+	bin/howdy-vala
 
 test: \
 	test-asm \
@@ -118,7 +122,8 @@ test: \
 	test-rust \
 	test-scheme \
 	test-tcl \
-	test-typescript
+	test-typescript \
+	test-vala
 	@echo ""
 	@echo "All tests passed!"
 
@@ -143,6 +148,7 @@ install: all
 		bin/howdy-scheme \
 		bin/howdy-tcl \
 		bin/howdy-typescript \
+		bin/howdy-vala \
 		$(DESTDIR)$(PREFIX)/bin/
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/erlang
 	install -m644 bin/howdy.beam $(DESTDIR)$(PREFIX)/share/howdy/erlang/howdy.beam
@@ -176,7 +182,8 @@ install: all
 	rust \
 	scheme \
 	tcl \
-	typescript
+	typescript \
+	vala
 .PHONY: haskell lisp pascal
 .PHONY: \
 	test-asm \
@@ -198,7 +205,8 @@ install: all
 	test-rust \
 	test-scheme \
 	test-tcl \
-	test-typescript
+	test-typescript \
+	test-vala
 
 clean:
 	rm -rf bin/
@@ -292,6 +300,9 @@ ruby: | bin
 	cp ruby/howdy.rb bin/howdy-ruby
 	sed -i '1s|.*|#!/usr/bin/env ruby|' bin/howdy-ruby
 	chmod 755 bin/howdy-ruby
+
+vala: | bin
+	valac vala/howdy.vala -o bin/howdy-vala
 
 typescript: | bin
 	mkdir -p bin/typescript
@@ -402,3 +413,7 @@ test-tcl: tcl
 test-typescript: typescript
 	bin/howdy-typescript | grep -q "TypeScript: Howdy!"
 	@echo "PASS: typescript"
+
+test-vala: vala
+	bin/howdy-vala | grep -q "Vala: Howdy!"
+	@echo "PASS: vala"
