@@ -49,32 +49,40 @@ Ubuntu and Wolfi/Chainguard.
 
 ## Supported Languages
 
-| Language      | Binary              | Type     | Notes                                      |
-|---------------|---------------------|----------|--------------------------------------------|
-| Assembly      | `howdy-asm`         | compiled |                                            |
-| Bash          | `howdy-bash`        | script   |                                            |
-| C             | `howdy-c`           | compiled |                                            |
-| C++           | `howdy-cpp`         | compiled |                                            |
-| Erlang        | `howdy-erlang`      | compiled |                                            |
-| Fortran       | `howdy-fortran`     | compiled |                                            |
-| Go            | `howdy-go`          | compiled |                                            |
-| Java          | `howdy-java`        | compiled |                                            |
-| Lua           | `howdy-lua`         | script   |                                            |
-| Node.js       | `howdy-node`        | script   |                                            |
-| OCaml         | `howdy-ocaml`       | compiled |                                            |
-| Perl          | `howdy-perl`        | script   |                                            |
-| PHP           | `howdy-php`         | script   |                                            |
-| Python        | `howdy-python`      | script   |                                            |
-| R             | `howdy-r`           | script   |                                            |
-| Ruby          | `howdy-ruby`        | script   |                                            |
-| Rust          | `howdy-rust`        | compiled |                                            |
-| Scheme        | `howdy-scheme`      | script   | requires `guile`                           |
-| Tcl           | `howdy-tcl`         | script   |                                            |
-| TypeScript    | `howdy-typescript`  | script   | compiled to JS, run via `node`             |
-| Vala          | `howdy-vala`        | compiled |                                            |
-| Haskell       | —                   | compiled | optional; requires `ghc` (not on all distros) |
+| Language      | Binary              | Type     | Notes                                           |
+|---------------|---------------------|----------|-------------------------------------------------|
+| Assembly      | `howdy-asm`         | compiled |                                                 |
+| Bash          | `howdy-bash`        | shell    | source: `shell/howdy.sh`                        |
+| BusyBox sh    | `howdy-busybox`     | shell    | source: `shell/howdy.sh`                        |
+| C             | `howdy-c`           | compiled |                                                 |
+| C++           | `howdy-cpp`         | compiled |                                                 |
+| Dash          | `howdy-dash`        | shell    | source: `shell/howdy.sh`                        |
+| Erlang        | `howdy-erlang`      | compiled |                                                 |
+| Fish          | `howdy-fish`        | shell    | source: `shell/howdy.sh`                        |
+| Fortran       | `howdy-fortran`     | compiled |                                                 |
+| Go            | `howdy-go`          | compiled |                                                 |
+| Java          | `howdy-java`        | compiled |                                                 |
+| Ksh           | `howdy-ksh`         | shell    | source: `shell/howdy.sh`                        |
+| Lua           | `howdy-lua`         | script   |                                                 |
+| Mksh          | `howdy-mksh`        | shell    | source: `shell/howdy.sh`                        |
+| Node.js       | `howdy-node`        | script   |                                                 |
+| OCaml         | `howdy-ocaml`       | compiled |                                                 |
+| Perl          | `howdy-perl`        | script   |                                                 |
+| PHP           | `howdy-php`         | script   |                                                 |
+| PowerShell    | `howdy-pwsh`        | shell    | source: `shell/howdy.ps1`; Chainguard only      |
+| Python        | `howdy-python`      | script   |                                                 |
+| R             | `howdy-r`           | script   |                                                 |
+| Ruby          | `howdy-ruby`        | script   |                                                 |
+| Rust          | `howdy-rust`        | compiled |                                                 |
+| Scheme        | `howdy-scheme`      | script   | requires `guile`                                |
+| Tcl           | `howdy-tcl`         | script   |                                                 |
+| TypeScript    | `howdy-typescript`  | script   | compiled to JS, run via `node`                  |
+| Vala          | `howdy-vala`        | compiled |                                                 |
+| Yash          | `howdy-yash`        | shell    | source: `shell/howdy.sh`                        |
+| Zsh           | `howdy-zsh`         | shell    | source: `shell/howdy.sh`                        |
+| Haskell       | —                   | compiled | optional; requires `ghc` (not on all distros)   |
 | Common Lisp   | —                   | script   | optional; requires `clisp` (not on all distros) |
-| Pascal        | —                   | compiled | optional; requires `fpc` (not on all distros) |
+| Pascal        | —                   | compiled | optional; requires `fpc` (not on all distros)   |
 
 ---
 
@@ -99,12 +107,13 @@ make
 All outputs land in `bin/`:
 
 ```
-bin/howdy-asm     bin/howdy-bash    bin/howdy-c       bin/howdy-cpp
-bin/howdy-erlang  bin/howdy-fortran bin/howdy-go      bin/howdy-java
-bin/howdy-lua     bin/howdy-node    bin/howdy-ocaml   bin/howdy-perl
-bin/howdy-php     bin/howdy-python  bin/howdy-r       bin/howdy-ruby
-bin/howdy-rust    bin/howdy-scheme  bin/howdy-tcl     bin/howdy-typescript
-bin/howdy-vala
+bin/howdy-asm       bin/howdy-bash      bin/howdy-busybox   bin/howdy-c
+bin/howdy-cpp       bin/howdy-dash      bin/howdy-erlang    bin/howdy-fish
+bin/howdy-fortran   bin/howdy-go        bin/howdy-java      bin/howdy-ksh
+bin/howdy-lua       bin/howdy-mksh      bin/howdy-node      bin/howdy-ocaml
+bin/howdy-perl      bin/howdy-php       bin/howdy-python    bin/howdy-r
+bin/howdy-ruby      bin/howdy-rust      bin/howdy-scheme    bin/howdy-tcl
+bin/howdy-typescript  bin/howdy-vala    bin/howdy-yash      bin/howdy-zsh
 ```
 
 ### Run everything
@@ -139,7 +148,7 @@ make clean
 
 Every push and pull request is tested on two platforms via GitHub Actions:
 
-- **Ubuntu** — `make deps` uses `apt-get`, compiles and runs all 21 languages
+- **Ubuntu** — `make deps` uses `apt-get`, compiles and runs all 28 languages/shells
 - **Wolfi/Chainguard** — `make deps` uses `apk`, same build and test suite
 
 The Makefile is the single source of truth for both dependency installation and
