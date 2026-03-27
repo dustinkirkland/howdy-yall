@@ -8,6 +8,7 @@ all: \
 	c \
 	cpp \
 	dash \
+	elvish \
 	erlang \
 	fish \
 	fortran \
@@ -45,6 +46,7 @@ deps:
 			golang-go \
 			default-jdk \
 			guile-3.0 \
+			elvish \
 			ksh \
 			lua5.4 \
 			mksh \
@@ -71,6 +73,7 @@ deps:
 			build-base \
 			busybox \
 			dash \
+			elvish \
 			erlang \
 			fish \
 			gfortran \
@@ -104,6 +107,7 @@ run: all
 	bin/howdy-c
 	bin/howdy-cpp
 	bin/howdy-dash
+	bin/howdy-elvish
 	bin/howdy-erlang
 	bin/howdy-fish
 	bin/howdy-fortran
@@ -132,6 +136,7 @@ test: \
 	test-c \
 	test-cpp \
 	test-dash \
+	test-elvish \
 	test-erlang \
 	test-fish \
 	test-fortran \
@@ -175,6 +180,7 @@ install: all
 		bin/howdy-c \
 		bin/howdy-cpp \
 		bin/howdy-dash \
+		bin/howdy-elvish \
 		bin/howdy-fish \
 		bin/howdy-fortran \
 		bin/howdy-go \
@@ -214,6 +220,7 @@ install: all
 	c \
 	cpp \
 	dash \
+	elvish \
 	erlang \
 	fish \
 	fortran \
@@ -244,6 +251,7 @@ install: all
 	test-c \
 	test-cpp \
 	test-dash \
+	test-elvish \
 	test-erlang \
 	test-fish \
 	test-fortran \
@@ -340,6 +348,11 @@ dash: | bin
 	cp shell/howdy.sh bin/howdy-dash
 	sed -i '1s|.*|#!/usr/bin/env dash|; s/Shell:/Dash:/' bin/howdy-dash
 	chmod 755 bin/howdy-dash
+
+elvish: | bin
+	cp shell/howdy.sh bin/howdy-elvish
+	sed -i '1s|.*|#!/usr/bin/env elvish|; s/Shell:/Elvish:/' bin/howdy-elvish
+	chmod 755 bin/howdy-elvish
 
 fish: | bin
 	cp shell/howdy.sh bin/howdy-fish
@@ -460,6 +473,10 @@ test-cpp: cpp
 test-dash: dash
 	bin/howdy-dash | grep -q "Dash: Howdy!"
 	@echo "PASS: dash"
+
+test-elvish: elvish
+	bin/howdy-elvish | grep -q "Elvish: Howdy!"
+	@echo "PASS: elvish"
 
 test-erlang: erlang
 	bin/howdy-erlang | grep -q "Erlang: Howdy!"

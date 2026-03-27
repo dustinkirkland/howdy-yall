@@ -57,6 +57,7 @@ Ubuntu and Wolfi/Chainguard.
 | C             | `howdy-c`           | compiled |                                                 |
 | C++           | `howdy-cpp`         | compiled |                                                 |
 | Dash          | `howdy-dash`        | shell    | source: `shell/howdy.sh`                        |
+| Elvish        | `howdy-elvish`      | shell    | source: `shell/howdy.sh`                        |
 | Erlang        | `howdy-erlang`      | compiled |                                                 |
 | Fish          | `howdy-fish`        | shell    | source: `shell/howdy.sh`                        |
 | Fortran       | `howdy-fortran`     | compiled |                                                 |
