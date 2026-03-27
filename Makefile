@@ -1,9 +1,18 @@
 all: clean run
 
 deps:
-	# install build dependencies
-	sudo apt-get update
-	sudo apt-get install -y gcc g++ erlang gfortran golang-go ghc default-jdk clisp nodejs fp-compiler perl php-cli python3 ruby rustc bash
+	# install build dependencies, detecting distro and package manager
+	@if command -v apt-get >/dev/null 2>&1; then \
+		sudo apt-get update; \
+		sudo apt-get install -y \
+			gcc g++ erlang gfortran golang-go default-jdk nodejs perl php-cli python3 ruby rustc bash \
+			ghc clisp fp-compiler; \
+	elif command -v apk >/dev/null 2>&1; then \
+		apk add --no-cache \
+			build-base bash erlang gfortran go default-jdk nodejs perl php python3 ruby rust; \
+	else \
+		echo "Unsupported distro: no apt-get or apk found"; exit 1; \
+	fi
 
 
 run: bash c cpp erlang fortran golang haskell java lisp nodejs pascal perl php python ruby rust
