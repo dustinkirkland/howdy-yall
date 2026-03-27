@@ -64,7 +64,6 @@ Ubuntu and Wolfi/Chainguard.
 | Java          | `howdy-java`        | compiled |                                                 |
 | Ksh           | `howdy-ksh`         | shell    | source: `shell/howdy.sh`                        |
 | Lua           | `howdy-lua`         | script   |                                                 |
-| Mksh          | `howdy-mksh`        | shell    | source: `shell/howdy.sh`; Ubuntu only           |
 | Node.js       | `howdy-node`        | script   |                                                 |
 | OCaml         | `howdy-ocaml`       | compiled |                                                 |
 | Perl          | `howdy-perl`        | script   |                                                 |
@@ -78,7 +77,6 @@ Ubuntu and Wolfi/Chainguard.
 | Tcl           | `howdy-tcl`         | script   |                                                 |
 | TypeScript    | `howdy-typescript`  | script   | compiled to JS, run via `node`                  |
 | Vala          | `howdy-vala`        | compiled |                                                 |
-| Yash          | `howdy-yash`        | shell    | source: `shell/howdy.sh`; Ubuntu only           |
 | Zsh           | `howdy-zsh`         | shell    | source: `shell/howdy.sh`                        |
 | Haskell       | —                   | compiled | optional; requires `ghc` (not on all distros)   |
 | Common Lisp   | —                   | script   | optional; requires `clisp` (not on all distros) |
@@ -148,7 +146,7 @@ make clean
 
 Every push and pull request is tested on two platforms via GitHub Actions:
 
-- **Ubuntu** — `make deps` uses `apt-get`; runs `make test` (26 languages/shells) + `make test-only-on-ubuntu` (mksh, yash)
+- **Ubuntu** — `make deps` uses `apt-get`; runs `make test` (26 languages/shells) + `make test-only-on-ubuntu`
 - **Wolfi/Chainguard** — `make deps` uses `apk`; runs `make test` (26 languages/shells) + `make test-only-on-chainguard` (pwsh)
 
 The Makefile is the single source of truth for both dependency installation and testing.
