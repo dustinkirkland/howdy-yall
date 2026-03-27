@@ -16,4 +16,4 @@ jobs:
       - uses: wolfi-dev/wolfi-act@main
         with:
           packages: build-base,bash,erlang,gfortran,go,default-jdk,nodejs,perl,php,python3,ruby,rust
-          run: make test
+          command: make test
