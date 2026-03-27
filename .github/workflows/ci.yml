@@ -7,10 +7,18 @@ on:
     branches: ["master"]
 
 jobs:
-  test:
+  ubuntu:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v6
       - run: make deps
       - run: make test
+
+  wolfi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: wolfi-dev/wolfi-act@main
+        with:
+          packages: build-base,apk-tools
+          command: make deps && make test
