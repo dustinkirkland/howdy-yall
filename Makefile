@@ -6,12 +6,12 @@ deps:
 	sudo apt-get install -y gcc g++ erlang-base gfortran golang ghc openjdk-7-jdk clisp nodejs fp-compiler perl php5-cli python ruby bash
 
 
-run: bash c cpp erlang fortran golang haskell java lisp nodejs pascal perl php python ruby
+run: bash c cpp erlang fortran golang haskell java lisp nodejs pascal perl php python ruby rust
 
-.PHONY: bash c cpp erlang fortran golang haskell java lisp nodejs pascal perl php python ruby
+.PHONY: bash c cpp erlang fortran golang haskell java lisp nodejs pascal perl php python ruby rust
 
 clean:
-	rm -f c/howdy cpp/howdy howdy.beam golang/howdy haskell/howdy haskell/howdy.hi haskell/howdy.o java/Howdy.class pascal/howdy pascal/howdy.o fortran/howdy
+	rm -f c/howdy cpp/howdy howdy.beam golang/howdy haskell/howdy haskell/howdy.hi haskell/howdy.o java/Howdy.class pascal/howdy pascal/howdy.o fortran/howdy rust/howdy
 
 bash:
 	bash bash/howdy.sh
@@ -65,3 +65,7 @@ python:
 
 ruby:
 	ruby ruby/howdy.rb
+
+rust:
+	rustc rust/howdy.rs -o rust/howdy
+	./rust/howdy
