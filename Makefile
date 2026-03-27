@@ -16,6 +16,7 @@ all: \
 	perl \
 	php \
 	python \
+	r \
 	ruby \
 	rust \
 	scheme \
@@ -42,6 +43,7 @@ deps:
 			php-cli \
 			python3 \
 			ruby \
+			r-base \
 			rustc \
 			tcl \
 			ghc \
@@ -63,6 +65,7 @@ deps:
 			perl \
 			php \
 			python3 \
+			R \
 			ruby \
 			rust \
 			tcl; \
@@ -85,6 +88,7 @@ run: all
 	bin/howdy-perl
 	bin/howdy-php
 	bin/howdy-python
+	bin/howdy-r
 	bin/howdy-ruby
 	bin/howdy-rust
 	bin/howdy-scheme
@@ -105,6 +109,7 @@ test: \
 	test-perl \
 	test-php \
 	test-python \
+	test-r \
 	test-ruby \
 	test-rust \
 	test-scheme \
@@ -127,6 +132,7 @@ install: all
 		bin/howdy-perl \
 		bin/howdy-php \
 		bin/howdy-python \
+		bin/howdy-r \
 		bin/howdy-ruby \
 		bin/howdy-rust \
 		bin/howdy-scheme \
@@ -159,6 +165,7 @@ install: all
 	perl \
 	php \
 	python \
+	r \
 	ruby \
 	rust \
 	scheme \
@@ -179,6 +186,7 @@ install: all
 	test-perl \
 	test-php \
 	test-python \
+	test-r \
 	test-ruby \
 	test-rust \
 	test-scheme \
@@ -277,6 +285,11 @@ ruby: | bin
 	sed -i '1s|.*|#!/usr/bin/env ruby|' bin/howdy-ruby
 	chmod 755 bin/howdy-ruby
 
+r: | bin
+	cp r/howdy.R bin/howdy-r
+	sed -i '1i #!/usr/bin/env Rscript' bin/howdy-r
+	chmod 755 bin/howdy-r
+
 tcl: | bin
 	cp tcl/howdy.tcl bin/howdy-tcl
 	sed -i '1s|.*|#!/usr/bin/env tclsh|' bin/howdy-tcl
@@ -349,6 +362,10 @@ test-php: php
 test-python: python
 	bin/howdy-python | grep -q "Python: Howdy!"
 	@echo "PASS: python"
+
+test-r: r
+	bin/howdy-r | grep -q "R: Howdy!"
+	@echo "PASS: r"
 
 test-ruby: ruby
 	bin/howdy-ruby | grep -q "Ruby: Howdy!"
