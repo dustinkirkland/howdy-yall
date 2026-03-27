@@ -1,4 +1,7 @@
-all: clean run
+PREFIX  ?= /usr/local
+DESTDIR ?=
+
+all: bash c cpp erlang fortran golang java nodejs perl php python ruby rust
 
 deps:
 	# install build dependencies, detecting distro and package manager
@@ -14,130 +17,182 @@ deps:
 		echo "Unsupported distro: no apt-get or apk found"; exit 1; \
 	fi
 
-
-run: bash c cpp erlang fortran golang haskell java lisp nodejs pascal perl php python ruby rust
+run: all
+	bin/howdy-bash
+	bin/howdy-c
+	bin/howdy-cpp
+	bin/howdy-erlang
+	bin/howdy-fortran
+	bin/howdy-go
+	bin/howdy-java
+	bin/howdy-node
+	bin/howdy-perl
+	bin/howdy-php
+	bin/howdy-python
+	bin/howdy-ruby
+	bin/howdy-rust
 
 test: test-bash test-c test-cpp test-erlang test-fortran test-golang test-java test-nodejs test-perl test-php test-python test-ruby test-rust
 	@echo ""
 	@echo "All tests passed!"
 
-.PHONY: bash c cpp erlang fortran golang haskell java lisp nodejs pascal perl php python ruby rust
-.PHONY: test test-bash test-c test-cpp test-erlang test-fortran test-golang test-java test-nodejs test-perl test-php test-python test-ruby test-rust
+install: all
+	install -d $(DESTDIR)$(PREFIX)/bin
+	install -m755 \
+		bin/howdy-bash bin/howdy-c bin/howdy-cpp bin/howdy-fortran \
+		bin/howdy-go bin/howdy-node bin/howdy-perl bin/howdy-php \
+		bin/howdy-python bin/howdy-ruby bin/howdy-rust \
+		$(DESTDIR)$(PREFIX)/bin/
+	install -d $(DESTDIR)$(PREFIX)/share/howdy/erlang
+	install -m644 bin/howdy.beam $(DESTDIR)$(PREFIX)/share/howdy/erlang/howdy.beam
+	echo '#!/bin/sh'                                                                             > $(DESTDIR)$(PREFIX)/bin/howdy-erlang
+	echo 'exec erl -noshell -pa $(PREFIX)/share/howdy/erlang -s howdy howdy -s init stop'       >> $(DESTDIR)$(PREFIX)/bin/howdy-erlang
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-erlang
+	install -d $(DESTDIR)$(PREFIX)/share/howdy/java
+	install -m644 bin/Howdy.class $(DESTDIR)$(PREFIX)/share/howdy/java/Howdy.class
+	echo '#!/bin/sh'                                                 > $(DESTDIR)$(PREFIX)/bin/howdy-java
+	echo 'exec java -classpath $(PREFIX)/share/howdy/java Howdy'    >> $(DESTDIR)$(PREFIX)/bin/howdy-java
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-java
+
+.PHONY: all deps run test install clean
+.PHONY: bash c cpp erlang fortran golang java nodejs perl php python ruby rust
+.PHONY: haskell lisp pascal
+.PHONY: test-bash test-c test-cpp test-erlang test-fortran test-golang test-java test-nodejs test-perl test-php test-python test-ruby test-rust
 
 clean:
-	rm -f c/howdy cpp/howdy howdy.beam golang/howdy haskell/howdy haskell/howdy.hi haskell/howdy.o java/Howdy.class pascal/howdy pascal/howdy.o fortran/howdy rust/howdy
+	rm -rf bin/
+	rm -f haskell/howdy haskell/howdy.hi haskell/howdy.o
+	rm -f pascal/howdy pascal/howdy.o
 
-bash:
-	bash bash/howdy.sh
+bin:
+	mkdir -p bin
 
-c:
-	gcc -o c/howdy c/howdy.c
-	./c/howdy
+# --- compiled languages ---
 
-cpp:
-	g++ -o cpp/howdy cpp/howdy.cpp
-	./cpp/howdy
+c: | bin
+	gcc -o bin/howdy-c c/howdy.c
 
-erlang:
-	erlc erlang/howdy.erl
-	erl -noshell -s howdy howdy -s init stop
+cpp: | bin
+	g++ -o bin/howdy-cpp cpp/howdy.cpp
 
-fortran:
-	gfortran fortran/howdy.f90 -o fortran/howdy
-	./fortran/howdy
+fortran: | bin
+	gfortran -o bin/howdy-fortran fortran/howdy.f90
 
-golang:
-	go build -o golang/howdy golang/howdy.go
-	./golang/howdy
+golang: | bin
+	go build -o bin/howdy-go golang/howdy.go
 
+rust: | bin
+	rustc rust/howdy.rs -o bin/howdy-rust
+
+erlang: | bin
+	erlc -o bin erlang/howdy.erl
+	echo '#!/bin/sh'                                                            > bin/howdy-erlang
+	echo 'D=$$(cd "$$(dirname "$$0")" && pwd)'                                  >> bin/howdy-erlang
+	echo 'exec erl -noshell -pa "$$D" -s howdy howdy -s init stop'              >> bin/howdy-erlang
+	chmod 755 bin/howdy-erlang
+
+java: | bin
+	javac -d bin java/Howdy.java
+	echo '#!/bin/sh'                                            > bin/howdy-java
+	echo 'D=$$(cd "$$(dirname "$$0")" && pwd)'                  >> bin/howdy-java
+	echo 'exec java -classpath "$$D" Howdy'                     >> bin/howdy-java
+	chmod 755 bin/howdy-java
+
+# optional compiled languages (not in 'all', not tested in CI)
 haskell:
 	ghc -o haskell/howdy haskell/howdy.hs
 	./haskell/howdy
-
-java:
-	javac java/Howdy.java
-	java -classpath java Howdy
 
 pascal:
 	pc pascal/howdy.pas
 	./pascal/howdy
 
+# --- script languages (copy + fix shebang) ---
+
+bash: | bin
+	cp bash/howdy.sh bin/howdy-bash
+	sed -i '1s|.*|#!/bin/bash|' bin/howdy-bash
+	chmod 755 bin/howdy-bash
+
+nodejs: | bin
+	cp nodejs/howdy.js bin/howdy-node
+	sed -i '1i #!/usr/bin/env node' bin/howdy-node
+	chmod 755 bin/howdy-node
+
+perl: | bin
+	cp perl/howdy.pl bin/howdy-perl
+	sed -i '1s|.*|#!/usr/bin/env perl|' bin/howdy-perl
+	chmod 755 bin/howdy-perl
+
+php: | bin
+	cp php/howdy.php bin/howdy-php
+	sed -i '1s|.*|#!/usr/bin/env php|' bin/howdy-php
+	chmod 755 bin/howdy-php
+
+python: | bin
+	cp python/howdy.py bin/howdy-python
+	sed -i '1s|.*|#!/usr/bin/env python3|' bin/howdy-python
+	chmod 755 bin/howdy-python
+
+ruby: | bin
+	cp ruby/howdy.rb bin/howdy-ruby
+	sed -i '1s|.*|#!/usr/bin/env ruby|' bin/howdy-ruby
+	chmod 755 bin/howdy-ruby
+
+# optional script languages (not in 'all')
 lisp:
 	clisp lisp/howdy.lisp
 
-nodejs:
-	node nodejs/howdy.js
+# --- test targets ---
 
-perl:
-	perl perl/howdy.pl
-
-php:
-	php php/howdy.php
-
-python:
-	python3 python/howdy.py
-
-ruby:
-	ruby ruby/howdy.rb
-
-rust:
-	rustc rust/howdy.rs -o rust/howdy
-	./rust/howdy
-
-test-bash:
-	bash bash/howdy.sh | grep -q "Shell: Howdy!"
+test-bash: bash
+	bin/howdy-bash | grep -q "Shell: Howdy!"
 	@echo "PASS: bash"
 
-test-c:
-	gcc -o c/howdy c/howdy.c
-	./c/howdy | grep -q "C: Howdy!"
+test-c: c
+	bin/howdy-c | grep -q "C: Howdy!"
 	@echo "PASS: c"
 
-test-cpp:
-	g++ -o cpp/howdy cpp/howdy.cpp
-	./cpp/howdy | grep -q "C++: Howdy!"
+test-cpp: cpp
+	bin/howdy-cpp | grep -q "C++: Howdy!"
 	@echo "PASS: cpp"
 
-test-erlang:
-	erlc -o /tmp erlang/howdy.erl
-	erl -noshell -pa /tmp -s howdy howdy -s init stop | grep -q "Erlang: Howdy!"
+test-erlang: erlang
+	bin/howdy-erlang | grep -q "Erlang: Howdy!"
 	@echo "PASS: erlang"
 
-test-fortran:
-	gfortran fortran/howdy.f90 -o fortran/howdy
-	./fortran/howdy | grep -q "Fortran: Howdy!"
+test-fortran: fortran
+	bin/howdy-fortran | grep -q "Fortran: Howdy!"
 	@echo "PASS: fortran"
 
-test-golang:
-	go run golang/howdy.go | grep -q "Golang: Howdy!"
+test-golang: golang
+	bin/howdy-go | grep -q "Golang: Howdy!"
 	@echo "PASS: golang"
 
-test-java:
-	javac java/Howdy.java
-	java -classpath java Howdy | grep -q "Java: Howdy!"
+test-java: java
+	bin/howdy-java | grep -q "Java: Howdy!"
 	@echo "PASS: java"
 
-test-nodejs:
-	node nodejs/howdy.js | grep -q "NodeJS: Howdy!"
+test-nodejs: nodejs
+	bin/howdy-node | grep -q "NodeJS: Howdy!"
 	@echo "PASS: nodejs"
 
-test-perl:
-	perl perl/howdy.pl | grep -q "Perl: Howdy!"
+test-perl: perl
+	bin/howdy-perl | grep -q "Perl: Howdy!"
 	@echo "PASS: perl"
 
-test-php:
-	php php/howdy.php | grep -q "PHP: Howdy!"
+test-php: php
+	bin/howdy-php | grep -q "PHP: Howdy!"
 	@echo "PASS: php"
 
-test-python:
-	python3 python/howdy.py | grep -q "Python: Howdy!"
+test-python: python
+	bin/howdy-python | grep -q "Python: Howdy!"
 	@echo "PASS: python"
 
-test-ruby:
-	ruby ruby/howdy.rb | grep -q "Ruby: Howdy!"
+test-ruby: ruby
+	bin/howdy-ruby | grep -q "Ruby: Howdy!"
 	@echo "PASS: ruby"
 
-test-rust:
-	rustc rust/howdy.rs -o rust/howdy
-	./rust/howdy | grep -q "Rust: Howdy!"
+test-rust: rust
+	bin/howdy-rust | grep -q "Rust: Howdy!"
 	@echo "PASS: rust"
