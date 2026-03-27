@@ -84,6 +84,7 @@ deps:
 			ocaml \
 			perl \
 			php \
+			dart \
 			powershell \
 			python3 \
 			R \
@@ -162,6 +163,7 @@ test-only-on-ubuntu: \
 	@echo "All Ubuntu-only tests passed!"
 
 test-only-on-chainguard: \
+	test-dart \
 	test-pwsh
 	@echo ""
 	@echo "All Chainguard-only tests passed!"
@@ -272,7 +274,7 @@ install: all
 	vala \
 	yash \
 	zsh
-.PHONY: haskell lisp pascal pwsh
+.PHONY: dart haskell lisp pascal pwsh
 .PHONY: \
 	test-asm \
 	test-bash \
@@ -302,6 +304,7 @@ install: all
 	test-vala \
 	test-yash \
 	test-zsh \
+	test-dart \
 	test-pwsh
 
 clean:
@@ -313,6 +316,10 @@ bin:
 	mkdir -p bin
 
 # --- compiled languages ---
+
+# dart: Chainguard-only (not in 'all'; tested via test-only-on-chainguard)
+dart: | bin
+	dart compile exe dart/howdy.dart -o bin/howdy-dart
 
 asm: | bin
 	nasm -f elf64 asm/howdy.asm -o bin/howdy-asm.o
@@ -584,6 +591,10 @@ test-yash: yash
 test-zsh: zsh
 	bin/howdy-zsh | grep -q "Zsh: Howdy!"
 	@echo "PASS: zsh"
+
+test-dart: dart
+	bin/howdy-dart | grep -q "Dart: Howdy!"
+	@echo "PASS: dart"
 
 test-pwsh: pwsh
 	bin/howdy-pwsh | grep -q "PowerShell: Howdy!"
