@@ -3,7 +3,7 @@ all: clean run
 deps:
 	# install build dependencies
 	sudo apt-get update
-	sudo apt-get install -y gcc g++ erlang-base gfortran golang ghc openjdk-7-jdk clisp nodejs fp-compiler perl php5-cli python ruby bash
+	sudo apt-get install -y gcc g++ erlang gfortran golang-go ghc default-jdk clisp nodejs fp-compiler perl php-cli python3 ruby rustc bash
 
 
 run: bash c cpp erlang fortran golang haskell java lisp nodejs pascal perl php python ruby rust
@@ -57,7 +57,7 @@ lisp:
 	clisp lisp/howdy.lisp
 
 nodejs:
-	nodejs nodejs/howdy.js
+	node nodejs/howdy.js
 
 perl:
 	perl perl/howdy.pl
@@ -66,7 +66,7 @@ php:
 	php php/howdy.php
 
 python:
-	python python/howdy.py
+	python3 python/howdy.py
 
 ruby:
 	ruby ruby/howdy.rb
