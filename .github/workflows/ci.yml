@@ -14,6 +14,7 @@ jobs:
       - run: make deps
       - run: make test
       - run: make test-only-on-ubuntu
+      - run: make test-install
 
   wolfi:
     runs-on: ubuntu-latest
@@ -22,4 +23,4 @@ jobs:
       - uses: wolfi-dev/wolfi-act@main
         with:
           packages: build-base,apk-tools
-          command: make deps && make test && make test-only-on-chainguard
+          command: make deps && make test && make test-only-on-chainguard && make test-install

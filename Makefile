@@ -166,6 +166,38 @@ test-only-on-chainguard: \
 	@echo ""
 	@echo "All Chainguard-only tests passed!"
 
+test-install:
+	rm -rf /tmp/howdy-install
+	$(MAKE) install PREFIX=/tmp/howdy-install
+	/tmp/howdy-install/bin/howdy-asm        | grep -q "Assembly: Howdy!"
+	/tmp/howdy-install/bin/howdy-bash       | grep -q "Bash: Howdy!"
+	/tmp/howdy-install/bin/howdy-busybox    | grep -q "BusyBox: Howdy!"
+	/tmp/howdy-install/bin/howdy-c          | grep -q "C: Howdy!"
+	/tmp/howdy-install/bin/howdy-cpp        | grep -q "C++: Howdy!"
+	/tmp/howdy-install/bin/howdy-dash       | grep -q "Dash: Howdy!"
+	/tmp/howdy-install/bin/howdy-erlang     | grep -q "Erlang: Howdy!"
+	/tmp/howdy-install/bin/howdy-fish       | grep -q "Fish: Howdy!"
+	/tmp/howdy-install/bin/howdy-fortran    | grep -q "Fortran: Howdy!"
+	/tmp/howdy-install/bin/howdy-go         | grep -q "Golang: Howdy!"
+	/tmp/howdy-install/bin/howdy-java       | grep -q "Java: Howdy!"
+	/tmp/howdy-install/bin/howdy-ksh        | grep -q "Ksh: Howdy!"
+	/tmp/howdy-install/bin/howdy-lua        | grep -q "Lua: Howdy!"
+	/tmp/howdy-install/bin/howdy-node       | grep -q "NodeJS: Howdy!"
+	/tmp/howdy-install/bin/howdy-ocaml      | grep -q "OCaml: Howdy!"
+	/tmp/howdy-install/bin/howdy-perl       | grep -q "Perl: Howdy!"
+	/tmp/howdy-install/bin/howdy-php        | grep -q "PHP: Howdy!"
+	/tmp/howdy-install/bin/howdy-python     | grep -q "Python: Howdy!"
+	/tmp/howdy-install/bin/howdy-r          | grep -q "R: Howdy!"
+	/tmp/howdy-install/bin/howdy-ruby       | grep -q "Ruby: Howdy!"
+	/tmp/howdy-install/bin/howdy-rust       | grep -q "Rust: Howdy!"
+	/tmp/howdy-install/bin/howdy-scheme     | grep -q "Scheme: Howdy!"
+	/tmp/howdy-install/bin/howdy-tcl        | grep -q "Tcl: Howdy!"
+	/tmp/howdy-install/bin/howdy-typescript | grep -q "TypeScript: Howdy!"
+	/tmp/howdy-install/bin/howdy-vala       | grep -q "Vala: Howdy!"
+	/tmp/howdy-install/bin/howdy-zsh        | grep -q "Zsh: Howdy!"
+	@echo ""
+	@echo "All install tests passed!"
+
 install: all
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install -m755 \
@@ -190,7 +222,6 @@ install: all
 		bin/howdy-rust \
 		bin/howdy-scheme \
 		bin/howdy-tcl \
-		bin/howdy-typescript \
 		bin/howdy-vala \
 		bin/howdy-zsh \
 		$(DESTDIR)$(PREFIX)/bin/
@@ -204,8 +235,13 @@ install: all
 	echo '#!/bin/sh'                                                 > $(DESTDIR)$(PREFIX)/bin/howdy-java
 	echo 'exec java -classpath $(PREFIX)/share/howdy/java Howdy'    >> $(DESTDIR)$(PREFIX)/bin/howdy-java
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-java
+	install -d $(DESTDIR)$(PREFIX)/share/howdy/typescript
+	install -m644 bin/typescript/howdy.js $(DESTDIR)$(PREFIX)/share/howdy/typescript/howdy.js
+	echo '#!/bin/sh'                                                                > $(DESTDIR)$(PREFIX)/bin/howdy-typescript
+	echo 'exec node "$(PREFIX)/share/howdy/typescript/howdy.js"'                   >> $(DESTDIR)$(PREFIX)/bin/howdy-typescript
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-typescript
 
-.PHONY: all deps run test install clean
+.PHONY: all deps run test test-install install clean
 .PHONY: test-only-on-ubuntu test-only-on-chainguard
 .PHONY: \
 	asm \
