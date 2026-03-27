@@ -1,4 +1,4 @@
 #!/usr/bin/php
 <?php
-print("    ===> PHP: Howdy!\n")
+print("    ====> PHP: Howdy!\n")
 ?>
