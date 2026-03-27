@@ -18,7 +18,8 @@ all: \
 	python \
 	ruby \
 	rust \
-	scheme
+	scheme \
+	tcl
 
 deps:
 	# install build dependencies, detecting distro and package manager
@@ -42,6 +43,7 @@ deps:
 			python3 \
 			ruby \
 			rustc \
+			tcl \
 			ghc \
 			clisp \
 			fp-compiler; \
@@ -62,7 +64,8 @@ deps:
 			php \
 			python3 \
 			ruby \
-			rust; \
+			rust \
+			tcl; \
 	else \
 		echo "Unsupported distro: no apt-get or apk found"; exit 1; \
 	fi
@@ -85,6 +88,7 @@ run: all
 	bin/howdy-ruby
 	bin/howdy-rust
 	bin/howdy-scheme
+	bin/howdy-tcl
 
 test: \
 	test-asm \
@@ -103,7 +107,8 @@ test: \
 	test-python \
 	test-ruby \
 	test-rust \
-	test-scheme
+	test-scheme \
+	test-tcl
 	@echo ""
 	@echo "All tests passed!"
 
@@ -125,6 +130,7 @@ install: all
 		bin/howdy-ruby \
 		bin/howdy-rust \
 		bin/howdy-scheme \
+		bin/howdy-tcl \
 		$(DESTDIR)$(PREFIX)/bin/
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/erlang
 	install -m644 bin/howdy.beam $(DESTDIR)$(PREFIX)/share/howdy/erlang/howdy.beam
@@ -155,7 +161,8 @@ install: all
 	python \
 	ruby \
 	rust \
-	scheme
+	scheme \
+	tcl
 .PHONY: haskell lisp pascal
 .PHONY: \
 	test-asm \
@@ -174,7 +181,8 @@ install: all
 	test-python \
 	test-ruby \
 	test-rust \
-	test-scheme
+	test-scheme \
+	test-tcl
 
 clean:
 	rm -rf bin/
@@ -269,6 +277,11 @@ ruby: | bin
 	sed -i '1s|.*|#!/usr/bin/env ruby|' bin/howdy-ruby
 	chmod 755 bin/howdy-ruby
 
+tcl: | bin
+	cp tcl/howdy.tcl bin/howdy-tcl
+	sed -i '1s|.*|#!/usr/bin/env tclsh|' bin/howdy-tcl
+	chmod 755 bin/howdy-tcl
+
 scheme: | bin
 	cp scheme/howdy.scm bin/howdy-scheme
 	sed -i '1i #!/usr/bin/env guile' bin/howdy-scheme
@@ -348,3 +361,7 @@ test-rust: rust
 test-scheme: scheme
 	bin/howdy-scheme | grep -q "Scheme: Howdy!"
 	@echo "PASS: scheme"
+
+test-tcl: tcl
+	bin/howdy-tcl | grep -q "Tcl: Howdy!"
+	@echo "PASS: tcl"
