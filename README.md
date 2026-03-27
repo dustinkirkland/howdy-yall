@@ -64,7 +64,7 @@ Ubuntu and Wolfi/Chainguard.
 | Java          | `howdy-java`        | compiled |                                                 |
 | Ksh           | `howdy-ksh`         | shell    | source: `shell/howdy.sh`                        |
 | Lua           | `howdy-lua`         | script   |                                                 |
-| Mksh          | `howdy-mksh`        | shell    | source: `shell/howdy.sh`                        |
+| Mksh          | `howdy-mksh`        | shell    | source: `shell/howdy.sh`; Ubuntu only           |
 | Node.js       | `howdy-node`        | script   |                                                 |
 | OCaml         | `howdy-ocaml`       | compiled |                                                 |
 | Perl          | `howdy-perl`        | script   |                                                 |
@@ -78,7 +78,7 @@ Ubuntu and Wolfi/Chainguard.
 | Tcl           | `howdy-tcl`         | script   |                                                 |
 | TypeScript    | `howdy-typescript`  | script   | compiled to JS, run via `node`                  |
 | Vala          | `howdy-vala`        | compiled |                                                 |
-| Yash          | `howdy-yash`        | shell    | source: `shell/howdy.sh`                        |
+| Yash          | `howdy-yash`        | shell    | source: `shell/howdy.sh`; Ubuntu only           |
 | Zsh           | `howdy-zsh`         | shell    | source: `shell/howdy.sh`                        |
 | Haskell       | —                   | compiled | optional; requires `ghc` (not on all distros)   |
 | Common Lisp   | —                   | script   | optional; requires `clisp` (not on all distros) |
@@ -110,10 +110,10 @@ All outputs land in `bin/`:
 bin/howdy-asm       bin/howdy-bash      bin/howdy-busybox   bin/howdy-c
 bin/howdy-cpp       bin/howdy-dash      bin/howdy-erlang    bin/howdy-fish
 bin/howdy-fortran   bin/howdy-go        bin/howdy-java      bin/howdy-ksh
-bin/howdy-lua       bin/howdy-mksh      bin/howdy-node      bin/howdy-ocaml
-bin/howdy-perl      bin/howdy-php       bin/howdy-python    bin/howdy-r
-bin/howdy-ruby      bin/howdy-rust      bin/howdy-scheme    bin/howdy-tcl
-bin/howdy-typescript  bin/howdy-vala    bin/howdy-yash      bin/howdy-zsh
+bin/howdy-lua       bin/howdy-node      bin/howdy-ocaml     bin/howdy-perl
+bin/howdy-php       bin/howdy-python    bin/howdy-r         bin/howdy-ruby
+bin/howdy-rust      bin/howdy-scheme    bin/howdy-tcl       bin/howdy-typescript
+bin/howdy-vala      bin/howdy-zsh
 ```
 
 ### Run everything
@@ -148,11 +148,10 @@ make clean
 
 Every push and pull request is tested on two platforms via GitHub Actions:
 
-- **Ubuntu** — `make deps` uses `apt-get`, compiles and runs all 28 languages/shells
-- **Wolfi/Chainguard** — `make deps` uses `apk`, same build and test suite
+- **Ubuntu** — `make deps` uses `apt-get`; runs `make test` (26 languages/shells) + `make test-only-on-ubuntu` (mksh, yash)
+- **Wolfi/Chainguard** — `make deps` uses `apk`; runs `make test` (26 languages/shells) + `make test-only-on-chainguard` (pwsh)
 
-The Makefile is the single source of truth for both dependency installation and
-testing. The CI workflow simply calls `make deps && make test`.
+The Makefile is the single source of truth for both dependency installation and testing.
 
 ---
 
