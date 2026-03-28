@@ -71,7 +71,8 @@ Ubuntu and Wolfi/Chainguard.
 | OCaml         | `howdy-ocaml`       | compiled |                                                 |
 | Perl          | `howdy-perl`        | script   |                                                 |
 | PHP           | `howdy-php`         | script   |                                                 |
-| PowerShell    | `howdy-pwsh`        | shell    | source: `shell/howdy.ps1`; Chainguard only      |
+| Nushell       | `howdy-nushell`     | shell    | source: `nushell/howdy.nu`; Chainguard only     |
+| PowerShell    | `howdy-pwsh`        | shell    | source: `powershell/howdy.ps1`; Chainguard only |
 | Python        | `howdy-python`      | script   |                                                 |
 | R             | `howdy-r`           | script   |                                                 |
 | Ruby          | `howdy-ruby`        | script   |                                                 |

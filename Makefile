@@ -461,13 +461,13 @@ zsh: | bin
 
 # pwsh: Chainguard-only (not in 'all'; tested via test-only-on-chainguard)
 pwsh: | bin
-	cp shell/howdy.ps1 bin/howdy-pwsh
+	cp powershell/howdy.ps1 bin/howdy-pwsh
 	sed -i '1i #!/usr/bin/env pwsh' bin/howdy-pwsh
 	chmod 755 bin/howdy-pwsh
 
 # nushell: Chainguard-only (not in 'all'; tested via test-only-on-chainguard)
 nushell: | bin
-	cp shell/howdy.nu bin/howdy-nushell
+	cp nushell/howdy.nu bin/howdy-nushell
 	chmod 755 bin/howdy-nushell
 
 # zig: Chainguard-only (not in 'all'; tested via test-only-on-chainguard)
