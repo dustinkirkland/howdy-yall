@@ -159,6 +159,26 @@ The Makefile is the single source of truth for both dependency installation and 
 
 ---
 
+## Source File Comments and License Headers
+
+Every source file in this repository includes two types of comments, intended
+to be instructional examples of each language's native comment syntax:
+
+1. **Apache 2.0 license header** — the standard boilerplate from
+   https://www.apache.org/licenses/LICENSE-2.0, with `Copyright 2010-2026
+   Dustin Kirkland`. Each language uses its own comment style: `//` for C-family
+   languages, `#` for scripting languages, `--` for Haskell and Lua, `;` for
+   Lisp and Scheme, `(* *)` for OCaml, `{ }` for Pascal, and so on.
+
+2. **Inline description comment** — a single line `Print a howdy greeting to
+   stdout.` immediately before the code, again using the language's native
+   comment syntax.
+
+These are intentional teaching examples, not boilerplate to be ignored — they
+show how each language marks code as licensed and how to document intent inline.
+
+---
+
 ## Extending
 
 ### Adding a new language
