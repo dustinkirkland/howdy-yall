@@ -78,7 +78,7 @@ deps:
 			dart \
 			dash \
 			default-jdk \
-			dotnet-sdk \
+			dotnet-10-sdk \
 			elvish \
 			erlang \
 			fish \
