@@ -396,14 +396,16 @@ cpp: | bin
 	g++ -o bin/howdy-cpp cpp/howdy.cpp
 
 csharp: | bin
+	$(eval CSHARP_TMP := $(shell mktemp -d))
 	dotnet publish csharp/howdy.csproj \
 		-c Release \
 		--self-contained \
 		-r linux-$(shell uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/') \
 		-p:PublishSingleFile=true \
-		-o /tmp/howdy-csharp
-	cp /tmp/howdy-csharp/howdy bin/howdy-csharp
+		-o $(CSHARP_TMP)
+	cp $(CSHARP_TMP)/howdy bin/howdy-csharp
 	chmod 755 bin/howdy-csharp
+	rm -rf $(CSHARP_TMP)
 
 fortran: | bin
 	gfortran -o bin/howdy-fortran fortran/howdy.f90
