@@ -500,12 +500,11 @@ ruby: | bin
 
 # scala: Chainguard-only (not in 'all'; tested via test-only-on-chainguard)
 scala: | bin
-	cp scala/howdy.scala bin/howdy.scala
 	echo '#!/bin/sh'                                                                                   > bin/howdy-scala
 	echo '# --power: required to unlock the experimental --offline flag'                              >> bin/howdy-scala
 	echo '# --offline: avoid downloading the Scala build server (bloop) and dependencies at runtime' >> bin/howdy-scala
 	echo '# --quiet: suppress experimental-feature warning messages'                                 >> bin/howdy-scala
-	echo 'exec scala --power --offline --quiet "$$(dirname "$$0")/howdy.scala"'                      >> bin/howdy-scala
+	echo 'exec scala --power --offline --quiet $(CURDIR)/scala/howdy.scala'                          >> bin/howdy-scala
 	chmod 755 bin/howdy-scala
 
 vala: | bin
