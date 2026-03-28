@@ -1,12 +1,10 @@
-# howdy
+# howdy-yall
 
 *Hello, World! — in every language.*
 
-*(Not to be confused with [boltgolt/howdy](https://github.com/boltgolt/howdy), the facial recognition authentication tool for Linux.)*
-
 ## Purpose
 
-`howdy` serves two purposes:
+`howdy-yall` serves two purposes:
 
 **Education.** Each source file is a minimal, self-contained example of how to
 write, compile (if needed), and run a program in that language. The code itself
@@ -21,7 +19,7 @@ image, or compiler toolchain quickly answers: *does this environment actually
 work?* If `howdy-rust` produces the right output, the Rust compiler and linker
 are functional. If `howdy-java` fails, something is wrong with the JDK or
 classpath setup. Thirty languages means thirty independent signals, which makes
-`howdy` a useful canary for regressions in packaging, runtime configuration, or
+`howdy-yall` a useful canary for regressions in packaging, runtime configuration, or
 ABI compatibility.
 
 ---
@@ -52,7 +50,7 @@ eventually become the **Windows Subsystem for Linux** — long before it was pub
 announced at Microsoft Build 2016. WSL translates Linux syscalls into Windows OS
 syscalls in real time (the inverse of Wine), and in the early days we needed a fast,
 simple way to smoke-test syscall translation coverage across a broad set of language
-runtimes and compiled binaries. `howdy` was exactly the right tool: compile it in a
+runtimes and compiled binaries. `howdy-yall` was exactly the right tool: compile it in a
 dozen languages, run it, see what crashes. I added Erlang, Fortran, Haskell, Java,
 and others during that period.
 
@@ -66,12 +64,12 @@ A decade after that, I joined **Chainguard**, where we build and ship minimal,
 hardened Linux containers for the world's most critical software supply chains.
 Testing that the latest compilers, runtimes, standard libraries, and toolchains
 actually work — across multiple distros and architectures — is a daily concern.
-`howdy` lives here now, extended to even more languages, with proper CI on both
+`howdy-yall` lives here now, extended to even more languages, with proper CI on both
 Ubuntu and Wolfi/Chainguard.
 
 ---
 
-In 2026, [Claude Code](https://claude.ai/code) helped extend `howdy` to its
+In 2026, [Claude Code](https://claude.ai/code) helped extend `howdy-yall` to its
 current breadth — adding many new languages, overhauling the build system, and
 adding license headers and source comments throughout. It turns out that AI is
 much faster than me at learning and writing "hello, world."
