@@ -38,70 +38,70 @@ deps:
 		sudo apt-get install -y \
 			bash \
 			busybox \
+			clisp \
 			dash \
+			default-jdk \
+			dotnet-sdk-8.0 \
+			elvish \
 			erlang \
 			fish \
-			gcc \
+			fp-compiler \
 			g++ \
+			gcc \
 			gfortran \
+			ghc \
 			golang-go \
-			default-jdk \
 			guile-3.0 \
-			elvish \
 			ksh \
 			lua5.4 \
 			mksh \
 			nasm \
+			node-typescript \
 			nodejs \
 			ocaml \
 			perl \
 			php-cli \
 			python3 \
-			ruby \
-			node-typescript \
-			valac \
 			r-base \
+			ruby \
 			rustc \
 			tcl \
+			valac \
 			yash \
-			zsh \
-			dotnet-sdk-8.0 \
-			ghc \
-			clisp \
-			fp-compiler; \
+			zsh; \
 	elif command -v apk >/dev/null 2>&1; then \
 		apk add --no-cache \
+			R \
 			bash \
 			build-base \
 			busybox \
+			dart \
 			dash \
+			default-jdk \
+			dotnet-8-sdk \
 			elvish \
 			erlang \
 			fish \
 			gfortran \
 			go \
-			default-jdk \
 			guile \
 			ksh \
 			lua5.4 \
 			nasm \
 			nodejs \
+			nushell \
 			ocaml \
 			perl \
 			php \
-			dart \
-			dotnet-8-sdk \
 			powershell \
-			nushell \
-			zig \
 			python3 \
-			R \
 			ruby \
-			scala \
 			rust \
+			scala \
 			tcl \
 			typescript \
 			vala \
+			zig \
 			zsh; \
 	else \
 		echo "Unsupported distro: no apt-get or apk found"; exit 1; \
