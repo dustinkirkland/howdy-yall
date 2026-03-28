@@ -246,6 +246,8 @@ install: all
 		bin/howdy-vala \
 		bin/howdy-zsh \
 		$(DESTDIR)$(PREFIX)/bin/
+	# NOTE: wrapper script content uses $(PREFIX) not $(DESTDIR)$(PREFIX) — DESTDIR is
+	# a staging root for packaging; at runtime the files live under $(PREFIX), not $(DESTDIR).
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/erlang
 	install -m644 bin/howdy.beam $(DESTDIR)$(PREFIX)/share/howdy/erlang/howdy.beam
 	echo '#!/bin/sh'                                                                             > $(DESTDIR)$(PREFIX)/bin/howdy-erlang
