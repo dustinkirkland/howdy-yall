@@ -55,8 +55,9 @@ Ubuntu and Wolfi/Chainguard.
 | Bash          | `howdy-bash`        | shell    | source: `shell/howdy.sh`                        |
 | BusyBox sh    | `howdy-busybox`     | shell    | source: `shell/howdy.sh`                        |
 | C             | `howdy-c`           | compiled |                                                 |
-| Dart          | `howdy-dart`        | compiled | Chainguard only                                 |
+| C#            | `howdy-csharp`      | compiled |                                                 |
 | C++           | `howdy-cpp`         | compiled |                                                 |
+| Dart          | `howdy-dart`        | compiled | Chainguard only                                 |
 | Dash          | `howdy-dash`        | shell    | source: `shell/howdy.sh`                        |
 | Erlang        | `howdy-erlang`      | compiled |                                                 |
 | Fish          | `howdy-fish`        | shell    | source: `shell/howdy.sh`                        |
@@ -107,12 +108,12 @@ All outputs land in `bin/`:
 
 ```
 bin/howdy-asm       bin/howdy-bash      bin/howdy-busybox   bin/howdy-c
-bin/howdy-cpp       bin/howdy-dash      bin/howdy-erlang    bin/howdy-fish
-bin/howdy-fortran   bin/howdy-go        bin/howdy-java      bin/howdy-ksh
-bin/howdy-lua       bin/howdy-node      bin/howdy-ocaml     bin/howdy-perl
-bin/howdy-php       bin/howdy-python    bin/howdy-r         bin/howdy-ruby
-bin/howdy-rust      bin/howdy-scheme    bin/howdy-tcl       bin/howdy-typescript
-bin/howdy-vala      bin/howdy-zsh
+bin/howdy-cpp       bin/howdy-csharp    bin/howdy-dash      bin/howdy-erlang
+bin/howdy-fish      bin/howdy-fortran   bin/howdy-go        bin/howdy-java
+bin/howdy-ksh       bin/howdy-lua       bin/howdy-node      bin/howdy-ocaml
+bin/howdy-perl      bin/howdy-php       bin/howdy-python    bin/howdy-r
+bin/howdy-ruby      bin/howdy-rust      bin/howdy-scheme    bin/howdy-tcl
+bin/howdy-typescript bin/howdy-vala     bin/howdy-zsh
 ```
 
 ### Run everything
@@ -147,8 +148,8 @@ make clean
 
 Every push and pull request is tested on two platforms via GitHub Actions:
 
-- **Ubuntu** — `make deps` uses `apt-get`; runs `make test` (26 languages/shells) + `make test-only-on-ubuntu`
-- **Wolfi/Chainguard** — `make deps` uses `apk`; runs `make test` (26 languages/shells) + `make test-only-on-chainguard` (pwsh)
+- **Ubuntu** — `make deps` uses `apt-get`; runs `make test` (27 languages/shells) + `make test-only-on-ubuntu`
+- **Wolfi/Chainguard** — `make deps` uses `apk`; runs `make test` (27 languages/shells) + `make test-only-on-chainguard` (dart, pwsh)
 
 The Makefile is the single source of truth for both dependency installation and testing.
 
