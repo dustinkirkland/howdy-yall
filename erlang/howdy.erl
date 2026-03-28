@@ -1,3 +1,4 @@
+% Print a howdy greeting to stdout.
 -module(howdy).
 -export([howdy/0]).
 
