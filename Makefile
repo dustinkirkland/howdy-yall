@@ -78,7 +78,7 @@ deps:
 			dart \
 			dash \
 			default-jdk \
-			dotnet-8-sdk \
+			dotnet-10-sdk \
 			elvish \
 			erlang \
 			fish \
@@ -397,7 +397,7 @@ cpp: | bin
 
 csharp: | bin
 	$(eval CSHARP_TMP := $(shell mktemp -d))
-	dotnet publish csharp/howdy.csproj \
+	HOME=/tmp DOTNET_CLI_HOME=/tmp dotnet publish csharp/howdy.csproj \
 		-c Release \
 		--self-contained \
 		-r linux-$(shell uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/') \
