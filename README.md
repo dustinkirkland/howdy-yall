@@ -2,6 +2,28 @@
 
 *Hello, World! — in every language.*
 
+## Purpose
+
+`howdy` serves two purposes:
+
+**Education.** Each source file is a minimal, self-contained example of how to
+write, compile (if needed), and run a program in that language. The code itself
+is trivial — print one line to stdout — which means there's nothing to
+understand except the language's basic syntax, how it structures a program, and
+how to invoke it. The comment style, license header, and inline description
+comment are also intentional teaching examples: they show how each language
+marks up code and how to apply a standard open-source license correctly.
+
+**Smoke testing.** Running `make deps && make test` on a new distro, container
+image, or compiler toolchain quickly answers: *does this environment actually
+work?* If `howdy-rust` produces the right output, the Rust compiler and linker
+are functional. If `howdy-java` fails, something is wrong with the JDK or
+classpath setup. Thirty languages means thirty independent signals, which makes
+`howdy` a useful canary for regressions in packaging, runtime configuration, or
+ABI compatibility.
+
+---
+
 ## The Story
 
 In September 2010, my wife Kim — a kindergarten teacher — and I were driving across
@@ -44,6 +66,13 @@ Testing that the latest compilers, runtimes, standard libraries, and toolchains
 actually work — across multiple distros and architectures — is a daily concern.
 `howdy` lives here now, extended to even more languages, with proper CI on both
 Ubuntu and Wolfi/Chainguard.
+
+---
+
+In 2026, [Claude Code](https://claude.ai/code) helped extend `howdy` to its
+current breadth — adding many new languages, overhauling the build system, and
+adding license headers and source comments throughout. It turns out that AI is
+much faster than me at learning and writing "hello, world."
 
 ---
 
