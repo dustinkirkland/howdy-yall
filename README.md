@@ -72,7 +72,7 @@ Ubuntu and Wolfi/Chainguard.
 In 2026, [Claude Code](https://claude.ai/code) helped extend `howdy` to its
 current breadth — adding many new languages, overhauling the build system, and
 adding license headers and source comments throughout. It turns out that AI is
-pretty good at writing "hello, world."
+much faster than me at learning and writing "hello, world."
 
 ---
 
