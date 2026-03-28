@@ -501,7 +501,7 @@ ruby: | bin
 # scala: Chainguard-only (not in 'all'; tested via test-only-on-chainguard)
 scala: | bin
 	mkdir -p bin/scala
-	scalac -d bin/scala scala/howdy.scala
+	JAVA_HOME= scalac -d bin/scala scala/howdy.scala
 	# copy scala*library*.jar from maven2 — both scala3-library_3 and scala-library are required
 	find /usr/share/scala/maven2 -name "scala*library*.jar" -exec cp {} bin/scala/ \;
 	echo '#!/bin/sh'                                                                     > bin/howdy-scala
