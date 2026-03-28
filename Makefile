@@ -25,7 +25,6 @@ all: \
 	r \
 	ruby \
 	rust \
-	scala \
 	scheme \
 	tcl \
 	typescript \
@@ -60,7 +59,6 @@ deps:
 			python3 \
 			ruby \
 			node-typescript \
-			scala \
 			valac \
 			r-base \
 			rustc \
@@ -133,7 +131,6 @@ run: all
 	bin/howdy-r
 	bin/howdy-ruby
 	bin/howdy-rust
-	bin/howdy-scala
 	bin/howdy-scheme
 	bin/howdy-tcl
 	bin/howdy-typescript
@@ -164,7 +161,6 @@ test: \
 	test-r \
 	test-ruby \
 	test-rust \
-	test-scala \
 	test-scheme \
 	test-tcl \
 	test-typescript \
@@ -183,6 +179,7 @@ test-only-on-chainguard: \
 	test-dart \
 	test-pwsh \
 	test-nushell \
+	test-scala \
 	test-zig
 	@echo ""
 	@echo "All Chainguard-only tests passed!"
@@ -249,11 +246,6 @@ install: all
 		bin/howdy-vala \
 		bin/howdy-zsh \
 		$(DESTDIR)$(PREFIX)/bin/
-	install -d $(DESTDIR)$(PREFIX)/share/howdy/scala
-	install -m644 bin/scala/*.class bin/scala/*.jar $(DESTDIR)$(PREFIX)/share/howdy/scala/
-	echo '#!/bin/sh'                                                                                            > $(DESTDIR)$(PREFIX)/bin/howdy-scala
-	echo 'exec java -cp "$(PREFIX)/share/howdy/scala:$(PREFIX)/share/howdy/scala/*" Howdy'                    >> $(DESTDIR)$(PREFIX)/bin/howdy-scala
-	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-scala
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/erlang
 	install -m644 bin/howdy.beam $(DESTDIR)$(PREFIX)/share/howdy/erlang/howdy.beam
 	echo '#!/bin/sh'                                                                             > $(DESTDIR)$(PREFIX)/bin/howdy-erlang
@@ -506,13 +498,11 @@ ruby: | bin
 	sed -i '1s|.*|#!/usr/bin/env ruby|' bin/howdy-ruby
 	chmod 755 bin/howdy-ruby
 
+# scala: Chainguard-only (not in 'all'; tested via test-only-on-chainguard)
 scala: | bin
-	mkdir -p bin/scala
-	JAVA_HOME=$$(dirname $$(dirname $$(readlink -f $$(which java)))) scalac -d bin/scala scala/howdy.scala
-	cp $$(find /usr -name "scala*library*.jar" 2>/dev/null | sort | tail -1) bin/scala/
-	echo '#!/bin/sh'                                         > bin/howdy-scala
-	echo 'D=$$(cd "$$(dirname "$$0")" && pwd)'               >> bin/howdy-scala
-	echo 'exec java -cp "$$D/scala:$$D/scala/*" Howdy'       >> bin/howdy-scala
+	cp scala/howdy.scala bin/howdy.scala
+	echo '#!/bin/sh'                                                           > bin/howdy-scala
+	echo 'exec scala --quiet "$$(dirname "$$0")/howdy.scala"'                 >> bin/howdy-scala
 	chmod 755 bin/howdy-scala
 
 vala: | bin

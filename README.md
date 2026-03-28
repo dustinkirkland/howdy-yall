@@ -77,6 +77,7 @@ Ubuntu and Wolfi/Chainguard.
 | R             | `howdy-r`           | script   |                                                 |
 | Ruby          | `howdy-ruby`        | script   |                                                 |
 | Rust          | `howdy-rust`        | compiled |                                                 |
+| Scala         | `howdy-scala`       | script   | Chainguard only                                 |
 | Scheme        | `howdy-scheme`      | script   | requires `guile`                                |
 | Tcl           | `howdy-tcl`         | script   |                                                 |
 | TypeScript    | `howdy-typescript`  | script   | compiled to JS, run via `node`                  |
@@ -151,8 +152,8 @@ make clean
 
 Every push and pull request is tested on two platforms via GitHub Actions:
 
-- **Ubuntu** — `make deps` uses `apt-get`; runs `make test` (27 languages/shells) + `make test-only-on-ubuntu`
-- **Wolfi/Chainguard** — `make deps` uses `apk`; runs `make test` (27 languages/shells) + `make test-only-on-chainguard` (dart, pwsh)
+- **Ubuntu** — `make deps` uses `apt-get`; runs `make test` (26 languages/shells) + `make test-only-on-ubuntu`
+- **Wolfi/Chainguard** — `make deps` uses `apk`; runs `make test` (26 languages/shells) + `make test-only-on-chainguard` (dart, pwsh, scala, nushell, zig)
 
 The Makefile is the single source of truth for both dependency installation and testing.
 
