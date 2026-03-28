@@ -4,14 +4,19 @@ UNAME_M ?= $(shell uname -m)
 
 # Auto-detect optional Chainguard/Wolfi-only tools; fold into all/test/install if present.
 HAS_DART    := $(shell command -v dart    2>/dev/null)
+HAS_MKSH    := $(shell command -v mksh    2>/dev/null)
 HAS_NUSHELL := $(shell command -v nu      2>/dev/null)
 HAS_PWSH    := $(shell command -v pwsh    2>/dev/null)
 HAS_SCALAC  := $(shell command -v scalac  2>/dev/null)
+HAS_YASH    := $(shell command -v yash    2>/dev/null)
 HAS_ZIG     := $(shell command -v zig     2>/dev/null)
 
 OPTIONAL :=
 ifneq ($(HAS_DART),)
 OPTIONAL += dart
+endif
+ifneq ($(HAS_MKSH),)
+OPTIONAL += mksh
 endif
 ifneq ($(HAS_NUSHELL),)
 OPTIONAL += nushell
@@ -21,6 +26,9 @@ OPTIONAL += pwsh
 endif
 ifneq ($(HAS_SCALAC),)
 OPTIONAL += scala
+endif
+ifneq ($(HAS_YASH),)
+OPTIONAL += yash
 endif
 ifneq ($(HAS_ZIG),)
 OPTIONAL += zig
@@ -205,11 +213,6 @@ test: \
 	@echo ""
 	@echo "All tests passed!"
 
-test-only-on-ubuntu: \
-	test-mksh \
-	test-yash
-	@echo ""
-	@echo "All Ubuntu-only tests passed!"
 
 
 test-install:
@@ -333,7 +336,6 @@ install: all
 	fi
 
 .PHONY: all deps run test test-install install clean
-.PHONY: test-only-on-ubuntu
 .PHONY: \
 	asm \
 	bash \
