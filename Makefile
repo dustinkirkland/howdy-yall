@@ -500,11 +500,12 @@ ruby: | bin
 
 # scala: Chainguard-only (not in 'all'; tested via test-only-on-chainguard)
 scala: | bin
-	echo '#!/bin/sh'                                                                                   > bin/howdy-scala
-	echo '# --power: required to unlock the experimental --offline flag'                              >> bin/howdy-scala
-	echo '# --offline: avoid downloading the Scala build server (bloop) and dependencies at runtime' >> bin/howdy-scala
-	echo '# --quiet: suppress experimental-feature warning messages'                                 >> bin/howdy-scala
-	echo 'exec scala --power --offline --quiet $(CURDIR)/scala/howdy.scala'                          >> bin/howdy-scala
+	mkdir -p bin/scala
+	scalac -d bin/scala scala/howdy.scala
+	# copy scala*library*.jar from maven2 — both scala3-library_3 and scala-library are required
+	find /usr/share/scala/maven2 -name "scala*library*.jar" -exec cp {} bin/scala/ \;
+	echo '#!/bin/sh'                                                                     > bin/howdy-scala
+	echo 'exec java -cp "$(CURDIR)/bin/scala:$(CURDIR)/bin/scala/*" Howdy'              >> bin/howdy-scala
 	chmod 755 bin/howdy-scala
 
 vala: | bin
