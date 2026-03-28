@@ -94,6 +94,7 @@ deps:
 			dart \
 			dotnet-8-sdk \
 			powershell \
+			nushell \
 			python3 \
 			R \
 			ruby \
@@ -179,7 +180,8 @@ test-only-on-ubuntu: \
 
 test-only-on-chainguard: \
 	test-dart \
-	test-pwsh
+	test-pwsh \
+	test-nushell
 	@echo ""
 	@echo "All Chainguard-only tests passed!"
 
@@ -300,7 +302,7 @@ install: all
 	vala \
 	yash \
 	zsh
-.PHONY: dart haskell lisp pascal pwsh
+.PHONY: dart haskell lisp pascal pwsh nushell
 .PHONY: \
 	test-asm \
 	test-bash \
@@ -334,7 +336,8 @@ install: all
 	test-yash \
 	test-zsh \
 	test-dart \
-	test-pwsh
+	test-pwsh \
+	test-nushell
 
 clean:
 	rm -rf bin/
@@ -458,6 +461,11 @@ pwsh: | bin
 	cp shell/howdy.ps1 bin/howdy-pwsh
 	sed -i '1i #!/usr/bin/env pwsh' bin/howdy-pwsh
 	chmod 755 bin/howdy-pwsh
+
+# nushell: Chainguard-only (not in 'all'; tested via test-only-on-chainguard)
+nushell: | bin
+	cp shell/howdy.nu bin/howdy-nushell
+	chmod 755 bin/howdy-nushell
 
 # --- other script languages (copy + fix shebang) ---
 
@@ -664,3 +672,7 @@ test-dart: dart
 test-pwsh: pwsh
 	bin/howdy-pwsh | grep -q "PowerShell: Howdy!"
 	@echo "PASS: pwsh"
+
+test-nushell: nushell
+	bin/howdy-nushell | grep -q "Nushell: Howdy!"
+	@echo "PASS: nushell"
