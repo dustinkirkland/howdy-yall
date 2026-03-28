@@ -11,6 +11,7 @@
 ; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
+;
 ; Print a howdy greeting to stdout via Linux write syscall, then exit.
 section .data
     msg db "    ====> Assembly: Howdy!", 10
