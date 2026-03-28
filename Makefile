@@ -399,7 +399,7 @@ csharp: | bin
 	dotnet publish csharp/howdy.csproj \
 		-c Release \
 		--self-contained \
-		-r linux-x64 \
+		-r linux-$(shell uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/') \
 		-p:PublishSingleFile=true \
 		-o /tmp/howdy-csharp
 	cp /tmp/howdy-csharp/howdy bin/howdy-csharp
