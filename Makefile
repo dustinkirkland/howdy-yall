@@ -383,16 +383,14 @@ rust: | bin
 
 erlang: | bin
 	erlc -o bin erlang/howdy.erl
-	echo '#!/bin/sh'                                                            > bin/howdy-erlang
-	echo 'D=$$(cd "$$(dirname "$$0")" && pwd)'                                  >> bin/howdy-erlang
-	echo 'exec erl -noshell -pa "$$D" -s howdy howdy -s init stop'              >> bin/howdy-erlang
+	echo '#!/bin/sh'                                                              > bin/howdy-erlang
+	echo 'exec erl -noshell -pa "$(CURDIR)/bin" -s howdy howdy -s init stop'     >> bin/howdy-erlang
 	chmod 755 bin/howdy-erlang
 
 java: | bin
 	javac -d bin java/Howdy.java
 	echo '#!/bin/sh'                                            > bin/howdy-java
-	echo 'D=$$(cd "$$(dirname "$$0")" && pwd)'                  >> bin/howdy-java
-	echo 'exec java -classpath "$$D" Howdy'                     >> bin/howdy-java
+	echo 'exec java -classpath "$(CURDIR)/bin" Howdy'           >> bin/howdy-java
 	chmod 755 bin/howdy-java
 
 # optional compiled languages (not in 'all', not tested in CI)
@@ -514,9 +512,8 @@ vala: | bin
 typescript: | bin
 	mkdir -p bin/typescript
 	tsc typescript/howdy.ts --outDir bin/typescript
-	echo '#!/bin/sh'                                                                     > bin/howdy-typescript
-	echo 'D=$$(cd "$$(dirname "$$0")" && pwd)'                                           >> bin/howdy-typescript
-	echo 'exec node "$$D/typescript/howdy.js"'                                           >> bin/howdy-typescript
+	echo '#!/bin/sh'                                                    > bin/howdy-typescript
+	echo 'exec node "$(CURDIR)/bin/typescript/howdy.js"'               >> bin/howdy-typescript
 	chmod 755 bin/howdy-typescript
 
 r: | bin
