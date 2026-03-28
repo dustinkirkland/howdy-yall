@@ -396,14 +396,16 @@ cpp: | bin
 	g++ -o bin/howdy-cpp cpp/howdy.cpp
 
 csharp: | bin
+	$(eval CSHARP_TMP := $(shell mktemp -d))
 	dotnet publish csharp/howdy.csproj \
 		-c Release \
 		--self-contained \
 		-r linux-$(shell uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/') \
 		-p:PublishSingleFile=true \
-		-o /tmp/howdy-csharp
-	cp /tmp/howdy-csharp/howdy bin/howdy-csharp
+		-o $(CSHARP_TMP)
+	cp $(CSHARP_TMP)/howdy bin/howdy-csharp
 	chmod 755 bin/howdy-csharp
+	rm -rf $(CSHARP_TMP)
 
 fortran: | bin
 	gfortran -o bin/howdy-fortran fortran/howdy.f90
@@ -538,6 +540,7 @@ scala: | bin
 	JAVA_HOME= scalac -d bin/scala scala/howdy.scala
 	# copy scala*library*.jar from maven2 — both scala3-library_3 and scala-library are required
 	find /usr/share/scala/maven2 -name "scala*library*.jar" -exec cp {} bin/scala/ \;
+	@test -n "$$(ls bin/scala/*.jar 2>/dev/null)" || { echo "ERROR: no scala library JARs found in /usr/share/scala/maven2"; exit 1; }
 	echo '#!/bin/sh'                                                                     > bin/howdy-scala
 	echo 'exec java -cp "$(CURDIR)/bin/scala:$(CURDIR)/bin/scala/*" Howdy'              >> bin/howdy-scala
 	chmod 755 bin/howdy-scala
