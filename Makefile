@@ -95,6 +95,7 @@ deps:
 			dotnet-8-sdk \
 			powershell \
 			nushell \
+			zig \
 			python3 \
 			R \
 			ruby \
@@ -181,7 +182,8 @@ test-only-on-ubuntu: \
 test-only-on-chainguard: \
 	test-dart \
 	test-pwsh \
-	test-nushell
+	test-nushell \
+	test-zig
 	@echo ""
 	@echo "All Chainguard-only tests passed!"
 
@@ -302,7 +304,7 @@ install: all
 	vala \
 	yash \
 	zsh
-.PHONY: dart haskell lisp pascal pwsh nushell
+.PHONY: dart haskell lisp pascal pwsh nushell zig
 .PHONY: \
 	test-asm \
 	test-bash \
@@ -337,7 +339,8 @@ install: all
 	test-zsh \
 	test-dart \
 	test-pwsh \
-	test-nushell
+	test-nushell \
+	test-zig
 
 clean:
 	rm -rf bin/
@@ -466,6 +469,10 @@ pwsh: | bin
 nushell: | bin
 	cp shell/howdy.nu bin/howdy-nushell
 	chmod 755 bin/howdy-nushell
+
+# zig: Chainguard-only (not in 'all'; tested via test-only-on-chainguard)
+zig: | bin
+	zig build-exe zig/howdy.zig -femit-bin=bin/howdy-zig
 
 # --- other script languages (copy + fix shebang) ---
 
@@ -676,3 +683,7 @@ test-pwsh: pwsh
 test-nushell: nushell
 	bin/howdy-nushell | grep -q "Nushell: Howdy!"
 	@echo "PASS: nushell"
+
+test-zig: zig
+	bin/howdy-zig | grep -q "Zig: Howdy!"
+	@echo "PASS: zig"

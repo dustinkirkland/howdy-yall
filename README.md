@@ -80,6 +80,7 @@ Ubuntu and Wolfi/Chainguard.
 | Tcl           | `howdy-tcl`         | script   |                                                 |
 | TypeScript    | `howdy-typescript`  | script   | compiled to JS, run via `node`                  |
 | Vala          | `howdy-vala`        | compiled |                                                 |
+| Zig           | `howdy-zig`         | compiled | Chainguard only                                 |
 | Zsh           | `howdy-zsh`         | shell    | source: `shell/howdy.sh`                        |
 | Haskell       | —                   | compiled | optional; requires `ghc` (not on all distros)   |
 | Common Lisp   | —                   | script   | optional; requires `clisp` (not on all distros) |
