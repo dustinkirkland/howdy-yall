@@ -187,33 +187,33 @@ test-only-on-chainguard: \
 test-install:
 	rm -rf /tmp/howdy-install
 	$(MAKE) install PREFIX=/tmp/howdy-install
-	/tmp/howdy-install/bin/howdy-asm        | grep -q "Assembly: Howdy!"
-	/tmp/howdy-install/bin/howdy-bash       | grep -q "Bash: Howdy!"
-	/tmp/howdy-install/bin/howdy-busybox    | grep -q "BusyBox: Howdy!"
-	/tmp/howdy-install/bin/howdy-c          | grep -q "C: Howdy!"
-	/tmp/howdy-install/bin/howdy-cpp        | grep -q "C++: Howdy!"
-	/tmp/howdy-install/bin/howdy-csharp     | grep -q "C#: Howdy!"
-	/tmp/howdy-install/bin/howdy-dash       | grep -q "Dash: Howdy!"
-	/tmp/howdy-install/bin/howdy-erlang     | grep -q "Erlang: Howdy!"
-	/tmp/howdy-install/bin/howdy-fish       | grep -q "Fish: Howdy!"
-	/tmp/howdy-install/bin/howdy-fortran    | grep -q "Fortran: Howdy!"
-	/tmp/howdy-install/bin/howdy-go         | grep -q "Golang: Howdy!"
-	/tmp/howdy-install/bin/howdy-java       | grep -q "Java: Howdy!"
-	/tmp/howdy-install/bin/howdy-ksh        | grep -q "Ksh: Howdy!"
-	/tmp/howdy-install/bin/howdy-lua        | grep -q "Lua: Howdy!"
-	/tmp/howdy-install/bin/howdy-node       | grep -q "NodeJS: Howdy!"
-	/tmp/howdy-install/bin/howdy-ocaml      | grep -q "OCaml: Howdy!"
-	/tmp/howdy-install/bin/howdy-perl       | grep -q "Perl: Howdy!"
-	/tmp/howdy-install/bin/howdy-php        | grep -q "PHP: Howdy!"
-	/tmp/howdy-install/bin/howdy-python     | grep -q "Python: Howdy!"
-	/tmp/howdy-install/bin/howdy-r          | grep -q "R: Howdy!"
-	/tmp/howdy-install/bin/howdy-ruby       | grep -q "Ruby: Howdy!"
-	/tmp/howdy-install/bin/howdy-rust       | grep -q "Rust: Howdy!"
-	/tmp/howdy-install/bin/howdy-scheme     | grep -q "Scheme: Howdy!"
-	/tmp/howdy-install/bin/howdy-tcl        | grep -q "Tcl: Howdy!"
-	/tmp/howdy-install/bin/howdy-typescript | grep -q "TypeScript: Howdy!"
-	/tmp/howdy-install/bin/howdy-vala       | grep -q "Vala: Howdy!"
-	/tmp/howdy-install/bin/howdy-zsh        | grep -q "Zsh: Howdy!"
+	/tmp/howdy-install/bin/howdy-asm        | grep -F "Assembly: Howdy!"
+	/tmp/howdy-install/bin/howdy-bash       | grep -F "Bash: Howdy!"
+	/tmp/howdy-install/bin/howdy-busybox    | grep -F "BusyBox: Howdy!"
+	/tmp/howdy-install/bin/howdy-c          | grep -F "C: Howdy!"
+	/tmp/howdy-install/bin/howdy-cpp        | grep -F "C++: Howdy!"
+	/tmp/howdy-install/bin/howdy-csharp     | grep -F "C#: Howdy!"
+	/tmp/howdy-install/bin/howdy-dash       | grep -F "Dash: Howdy!"
+	/tmp/howdy-install/bin/howdy-erlang     | grep -F "Erlang: Howdy!"
+	/tmp/howdy-install/bin/howdy-fish       | grep -F "Fish: Howdy!"
+	/tmp/howdy-install/bin/howdy-fortran    | grep -F "Fortran: Howdy!"
+	/tmp/howdy-install/bin/howdy-go         | grep -F "Golang: Howdy!"
+	/tmp/howdy-install/bin/howdy-java       | grep -F "Java: Howdy!"
+	/tmp/howdy-install/bin/howdy-ksh        | grep -F "Ksh: Howdy!"
+	/tmp/howdy-install/bin/howdy-lua        | grep -F "Lua: Howdy!"
+	/tmp/howdy-install/bin/howdy-node       | grep -F "NodeJS: Howdy!"
+	/tmp/howdy-install/bin/howdy-ocaml      | grep -F "OCaml: Howdy!"
+	/tmp/howdy-install/bin/howdy-perl       | grep -F "Perl: Howdy!"
+	/tmp/howdy-install/bin/howdy-php        | grep -F "PHP: Howdy!"
+	/tmp/howdy-install/bin/howdy-python     | grep -F "Python: Howdy!"
+	/tmp/howdy-install/bin/howdy-r          | grep -F "R: Howdy!"
+	/tmp/howdy-install/bin/howdy-ruby       | grep -F "Ruby: Howdy!"
+	/tmp/howdy-install/bin/howdy-rust       | grep -F "Rust: Howdy!"
+	/tmp/howdy-install/bin/howdy-scheme     | grep -F "Scheme: Howdy!"
+	/tmp/howdy-install/bin/howdy-tcl        | grep -F "Tcl: Howdy!"
+	/tmp/howdy-install/bin/howdy-typescript | grep -F "TypeScript: Howdy!"
+	/tmp/howdy-install/bin/howdy-vala       | grep -F "Vala: Howdy!"
+	/tmp/howdy-install/bin/howdy-zsh        | grep -F "Zsh: Howdy!"
 	@echo ""
 	@echo "All install tests passed!"
 
@@ -542,141 +542,141 @@ lisp:
 # --- test targets ---
 
 test-asm: asm
-	bin/howdy-asm | grep -q "Assembly: Howdy!"
+	bin/howdy-asm | grep -F "Assembly: Howdy!"
 	@echo "PASS: asm"
 
 test-bash: bash
-	bin/howdy-bash | grep -q "Bash: Howdy!"
+	bin/howdy-bash | grep -F "Bash: Howdy!"
 	@echo "PASS: bash"
 
 test-busybox: busybox
-	bin/howdy-busybox | grep -q "BusyBox: Howdy!"
+	bin/howdy-busybox | grep -F "BusyBox: Howdy!"
 	@echo "PASS: busybox"
 
 test-c: c
-	bin/howdy-c | grep -q "C: Howdy!"
+	bin/howdy-c | grep -F "C: Howdy!"
 	@echo "PASS: c"
 
 test-cpp: cpp
-	bin/howdy-cpp | grep -q "C++: Howdy!"
+	bin/howdy-cpp | grep -F "C++: Howdy!"
 	@echo "PASS: cpp"
 
 test-csharp: csharp
-	bin/howdy-csharp | grep -q "C#: Howdy!"
+	bin/howdy-csharp | grep -F "C#: Howdy!"
 	@echo "PASS: csharp"
 
 test-dash: dash
-	bin/howdy-dash | grep -q "Dash: Howdy!"
+	bin/howdy-dash | grep -F "Dash: Howdy!"
 	@echo "PASS: dash"
 
 test-elvish: elvish
-	bin/howdy-elvish | grep -q "Elvish: Howdy!"
+	bin/howdy-elvish | grep -F "Elvish: Howdy!"
 	@echo "PASS: elvish"
 
 test-erlang: erlang
-	bin/howdy-erlang | grep -q "Erlang: Howdy!"
+	bin/howdy-erlang | grep -F "Erlang: Howdy!"
 	@echo "PASS: erlang"
 
 test-fish: fish
-	bin/howdy-fish | grep -q "Fish: Howdy!"
+	bin/howdy-fish | grep -F "Fish: Howdy!"
 	@echo "PASS: fish"
 
 test-fortran: fortran
-	bin/howdy-fortran | grep -q "Fortran: Howdy!"
+	bin/howdy-fortran | grep -F "Fortran: Howdy!"
 	@echo "PASS: fortran"
 
 test-go: go
-	bin/howdy-go | grep -q "Golang: Howdy!"
+	bin/howdy-go | grep -F "Golang: Howdy!"
 	@echo "PASS: go"
 
 test-java: java
-	bin/howdy-java | grep -q "Java: Howdy!"
+	bin/howdy-java | grep -F "Java: Howdy!"
 	@echo "PASS: java"
 
 test-ksh: ksh
-	bin/howdy-ksh | grep -q "Ksh: Howdy!"
+	bin/howdy-ksh | grep -F "Ksh: Howdy!"
 	@echo "PASS: ksh"
 
 test-lua: lua
-	bin/howdy-lua | grep -q "Lua: Howdy!"
+	bin/howdy-lua | grep -F "Lua: Howdy!"
 	@echo "PASS: lua"
 
 test-mksh: mksh
-	bin/howdy-mksh | grep -q "Mksh: Howdy!"
+	bin/howdy-mksh | grep -F "Mksh: Howdy!"
 	@echo "PASS: mksh"
 
 test-node: node
-	bin/howdy-node | grep -q "NodeJS: Howdy!"
+	bin/howdy-node | grep -F "NodeJS: Howdy!"
 	@echo "PASS: node"
 
 test-ocaml: ocaml
-	bin/howdy-ocaml | grep -q "OCaml: Howdy!"
+	bin/howdy-ocaml | grep -F "OCaml: Howdy!"
 	@echo "PASS: ocaml"
 
 test-perl: perl
-	bin/howdy-perl | grep -q "Perl: Howdy!"
+	bin/howdy-perl | grep -F "Perl: Howdy!"
 	@echo "PASS: perl"
 
 test-php: php
-	bin/howdy-php | grep -q "PHP: Howdy!"
+	bin/howdy-php | grep -F "PHP: Howdy!"
 	@echo "PASS: php"
 
 test-python: python
-	bin/howdy-python | grep -q "Python: Howdy!"
+	bin/howdy-python | grep -F "Python: Howdy!"
 	@echo "PASS: python"
 
 test-r: r
-	bin/howdy-r | grep -q "R: Howdy!"
+	bin/howdy-r | grep -F "R: Howdy!"
 	@echo "PASS: r"
 
 test-ruby: ruby
-	bin/howdy-ruby | grep -q "Ruby: Howdy!"
+	bin/howdy-ruby | grep -F "Ruby: Howdy!"
 	@echo "PASS: ruby"
 
 test-rust: rust
-	bin/howdy-rust | grep -q "Rust: Howdy!"
+	bin/howdy-rust | grep -F "Rust: Howdy!"
 	@echo "PASS: rust"
 
 test-scheme: scheme
-	bin/howdy-scheme | grep -q "Scheme: Howdy!"
+	bin/howdy-scheme | grep -F "Scheme: Howdy!"
 	@echo "PASS: scheme"
 
 test-tcl: tcl
-	bin/howdy-tcl | grep -q "Tcl: Howdy!"
+	bin/howdy-tcl | grep -F "Tcl: Howdy!"
 	@echo "PASS: tcl"
 
 test-typescript: typescript
-	bin/howdy-typescript | grep -q "TypeScript: Howdy!"
+	bin/howdy-typescript | grep -F "TypeScript: Howdy!"
 	@echo "PASS: typescript"
 
 test-scala: scala
-	bin/howdy-scala | grep -q "Scala: Howdy!"
+	bin/howdy-scala | grep -F "Scala: Howdy!"
 	@echo "PASS: scala"
 
 test-vala: vala
-	bin/howdy-vala | grep -q "Vala: Howdy!"
+	bin/howdy-vala | grep -F "Vala: Howdy!"
 	@echo "PASS: vala"
 
 test-yash: yash
-	bin/howdy-yash | grep -q "Yash: Howdy!"
+	bin/howdy-yash | grep -F "Yash: Howdy!"
 	@echo "PASS: yash"
 
 test-zsh: zsh
-	bin/howdy-zsh | grep -q "Zsh: Howdy!"
+	bin/howdy-zsh | grep -F "Zsh: Howdy!"
 	@echo "PASS: zsh"
 
 test-dart: dart
-	bin/howdy-dart | grep -q "Dart: Howdy!"
+	bin/howdy-dart | grep -F "Dart: Howdy!"
 	@echo "PASS: dart"
 
 test-pwsh: pwsh
-	bin/howdy-pwsh | grep -q "PowerShell: Howdy!"
+	bin/howdy-pwsh | grep -F "PowerShell: Howdy!"
 	@echo "PASS: pwsh"
 
 test-nushell: nushell
-	bin/howdy-nushell | grep -q "Nushell: Howdy!"
+	bin/howdy-nushell | grep -F "Nushell: Howdy!"
 	@echo "PASS: nushell"
 
 test-zig: zig
-	bin/howdy-zig | grep -q "Zig: Howdy!"
+	bin/howdy-zig | grep -F "Zig: Howdy!"
 	@echo "PASS: zig"
