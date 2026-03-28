@@ -38,70 +38,70 @@ deps:
 		sudo apt-get install -y \
 			bash \
 			busybox \
+			clisp \
 			dash \
+			default-jdk \
+			dotnet-sdk-8.0 \
+			elvish \
 			erlang \
 			fish \
-			gcc \
+			fp-compiler \
 			g++ \
+			gcc \
 			gfortran \
+			ghc \
 			golang-go \
-			default-jdk \
 			guile-3.0 \
-			elvish \
 			ksh \
 			lua5.4 \
 			mksh \
 			nasm \
+			node-typescript \
 			nodejs \
 			ocaml \
 			perl \
 			php-cli \
 			python3 \
-			ruby \
-			node-typescript \
-			valac \
 			r-base \
+			ruby \
 			rustc \
 			tcl \
+			valac \
 			yash \
-			zsh \
-			dotnet-sdk-8.0 \
-			ghc \
-			clisp \
-			fp-compiler; \
+			zsh; \
 	elif command -v apk >/dev/null 2>&1; then \
 		apk add --no-cache \
+			R \
 			bash \
 			build-base \
 			busybox \
+			dart \
 			dash \
+			default-jdk \
+			dotnet-8-sdk \
 			elvish \
 			erlang \
 			fish \
 			gfortran \
 			go \
-			default-jdk \
 			guile \
 			ksh \
 			lua5.4 \
 			nasm \
 			nodejs \
+			nushell \
 			ocaml \
 			perl \
 			php \
-			dart \
-			dotnet-8-sdk \
 			powershell \
-			nushell \
-			zig \
 			python3 \
-			R \
 			ruby \
-			scala \
 			rust \
+			scala \
 			tcl \
 			typescript \
 			vala \
+			zig \
 			zsh; \
 	else \
 		echo "Unsupported distro: no apt-get or apk found"; exit 1; \
@@ -136,6 +136,13 @@ run: all
 	bin/howdy-typescript
 	bin/howdy-vala
 	bin/howdy-zsh
+	@[ -f bin/howdy-dart    ] && bin/howdy-dart    || true
+	@[ -f bin/howdy-mksh    ] && bin/howdy-mksh    || true
+	@[ -f bin/howdy-nushell ] && bin/howdy-nushell || true
+	@[ -f bin/howdy-pwsh    ] && bin/howdy-pwsh    || true
+	@[ -f bin/howdy-scala   ] && bin/howdy-scala   || true
+	@[ -f bin/howdy-yash    ] && bin/howdy-yash    || true
+	@[ -f bin/howdy-zig     ] && bin/howdy-zig     || true
 
 test: \
 	test-asm \
@@ -188,32 +195,59 @@ test-install:
 	rm -rf /tmp/howdy-install
 	$(MAKE) install PREFIX=/tmp/howdy-install
 	/tmp/howdy-install/bin/howdy-asm        | grep -F "Assembly: Howdy!"
+	@echo "PASS: asm"
 	/tmp/howdy-install/bin/howdy-bash       | grep -F "Bash: Howdy!"
+	@echo "PASS: bash"
 	/tmp/howdy-install/bin/howdy-busybox    | grep -F "BusyBox: Howdy!"
+	@echo "PASS: busybox"
 	/tmp/howdy-install/bin/howdy-c          | grep -F "C: Howdy!"
+	@echo "PASS: c"
 	/tmp/howdy-install/bin/howdy-cpp        | grep -F "C++: Howdy!"
+	@echo "PASS: cpp"
 	/tmp/howdy-install/bin/howdy-csharp     | grep -F "C#: Howdy!"
+	@echo "PASS: csharp"
 	/tmp/howdy-install/bin/howdy-dash       | grep -F "Dash: Howdy!"
+	@echo "PASS: dash"
 	/tmp/howdy-install/bin/howdy-erlang     | grep -F "Erlang: Howdy!"
+	@echo "PASS: erlang"
 	/tmp/howdy-install/bin/howdy-fish       | grep -F "Fish: Howdy!"
+	@echo "PASS: fish"
 	/tmp/howdy-install/bin/howdy-fortran    | grep -F "Fortran: Howdy!"
+	@echo "PASS: fortran"
 	/tmp/howdy-install/bin/howdy-go         | grep -F "Golang: Howdy!"
+	@echo "PASS: go"
 	/tmp/howdy-install/bin/howdy-java       | grep -F "Java: Howdy!"
+	@echo "PASS: java"
 	/tmp/howdy-install/bin/howdy-ksh        | grep -F "Ksh: Howdy!"
+	@echo "PASS: ksh"
 	/tmp/howdy-install/bin/howdy-lua        | grep -F "Lua: Howdy!"
+	@echo "PASS: lua"
 	/tmp/howdy-install/bin/howdy-node       | grep -F "NodeJS: Howdy!"
+	@echo "PASS: node"
 	/tmp/howdy-install/bin/howdy-ocaml      | grep -F "OCaml: Howdy!"
+	@echo "PASS: ocaml"
 	/tmp/howdy-install/bin/howdy-perl       | grep -F "Perl: Howdy!"
+	@echo "PASS: perl"
 	/tmp/howdy-install/bin/howdy-php        | grep -F "PHP: Howdy!"
+	@echo "PASS: php"
 	/tmp/howdy-install/bin/howdy-python     | grep -F "Python: Howdy!"
+	@echo "PASS: python"
 	/tmp/howdy-install/bin/howdy-r          | grep -F "R: Howdy!"
+	@echo "PASS: r"
 	/tmp/howdy-install/bin/howdy-ruby       | grep -F "Ruby: Howdy!"
+	@echo "PASS: ruby"
 	/tmp/howdy-install/bin/howdy-rust       | grep -F "Rust: Howdy!"
+	@echo "PASS: rust"
 	/tmp/howdy-install/bin/howdy-scheme     | grep -F "Scheme: Howdy!"
+	@echo "PASS: scheme"
 	/tmp/howdy-install/bin/howdy-tcl        | grep -F "Tcl: Howdy!"
+	@echo "PASS: tcl"
 	/tmp/howdy-install/bin/howdy-typescript | grep -F "TypeScript: Howdy!"
+	@echo "PASS: typescript"
 	/tmp/howdy-install/bin/howdy-vala       | grep -F "Vala: Howdy!"
+	@echo "PASS: vala"
 	/tmp/howdy-install/bin/howdy-zsh        | grep -F "Zsh: Howdy!"
+	@echo "PASS: zsh"
 	@echo ""
 	@echo "All install tests passed!"
 
@@ -246,6 +280,8 @@ install: all
 		bin/howdy-vala \
 		bin/howdy-zsh \
 		$(DESTDIR)$(PREFIX)/bin/
+	# NOTE: wrapper script content uses $(PREFIX) not $(DESTDIR)$(PREFIX) — DESTDIR is
+	# a staging root for packaging; at runtime the files live under $(PREFIX), not $(DESTDIR).
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/erlang
 	install -m644 bin/howdy.beam $(DESTDIR)$(PREFIX)/share/howdy/erlang/howdy.beam
 	echo '#!/bin/sh'                                                                             > $(DESTDIR)$(PREFIX)/bin/howdy-erlang
@@ -363,7 +399,7 @@ csharp: | bin
 	dotnet publish csharp/howdy.csproj \
 		-c Release \
 		--self-contained \
-		-r linux-x64 \
+		-r linux-$(shell uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/') \
 		-p:PublishSingleFile=true \
 		-o /tmp/howdy-csharp
 	cp /tmp/howdy-csharp/howdy bin/howdy-csharp
@@ -383,16 +419,14 @@ rust: | bin
 
 erlang: | bin
 	erlc -o bin erlang/howdy.erl
-	echo '#!/bin/sh'                                                            > bin/howdy-erlang
-	echo 'D=$$(cd "$$(dirname "$$0")" && pwd)'                                  >> bin/howdy-erlang
-	echo 'exec erl -noshell -pa "$$D" -s howdy howdy -s init stop'              >> bin/howdy-erlang
+	echo '#!/bin/sh'                                                              > bin/howdy-erlang
+	echo 'exec erl -noshell -pa "$(CURDIR)/bin" -s howdy howdy -s init stop'     >> bin/howdy-erlang
 	chmod 755 bin/howdy-erlang
 
 java: | bin
 	javac -d bin java/Howdy.java
 	echo '#!/bin/sh'                                            > bin/howdy-java
-	echo 'D=$$(cd "$$(dirname "$$0")" && pwd)'                  >> bin/howdy-java
-	echo 'exec java -classpath "$$D" Howdy'                     >> bin/howdy-java
+	echo 'exec java -classpath "$(CURDIR)/bin" Howdy'           >> bin/howdy-java
 	chmod 755 bin/howdy-java
 
 # optional compiled languages (not in 'all', not tested in CI)
@@ -514,9 +548,8 @@ vala: | bin
 typescript: | bin
 	mkdir -p bin/typescript
 	tsc typescript/howdy.ts --outDir bin/typescript
-	echo '#!/bin/sh'                                                                     > bin/howdy-typescript
-	echo 'D=$$(cd "$$(dirname "$$0")" && pwd)'                                           >> bin/howdy-typescript
-	echo 'exec node "$$D/typescript/howdy.js"'                                           >> bin/howdy-typescript
+	echo '#!/bin/sh'                                                    > bin/howdy-typescript
+	echo 'exec node "$(CURDIR)/bin/typescript/howdy.js"'               >> bin/howdy-typescript
 	chmod 755 bin/howdy-typescript
 
 r: | bin
