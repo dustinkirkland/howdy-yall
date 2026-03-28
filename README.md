@@ -2,6 +2,8 @@
 
 *Hello, World! — in every language.*
 
+*(Not to be confused with [boltgolt/howdy](https://github.com/boltgolt/howdy), the facial recognition authentication tool for Linux.)*
+
 ## Purpose
 
 `howdy` serves two purposes:
@@ -265,6 +267,17 @@ elif command -v dnf >/dev/null 2>&1; then \
 ```
 
 Add a new `elif` block in the `deps` target following the same pattern.
+
+---
+
+## Similar Projects
+
+If you enjoy this sort of thing, check out these other takes on the "hello, world" genre — with hundreds more languages:
+
+- **[leachim6/hello-world](https://github.com/leachim6/hello-world)** — one of the most comprehensive collections, organized alphabetically
+- **[agnilondapakou/helloWorld](https://github.com/agnilondapakou/helloWorld)** — community-driven collection across many languages
+- **[project-aki/Hello-World](https://github.com/project-aki/Hello-World)** — another broad multilanguage collection
+- **[Polyglot Hello World](https://github.com/thomasnield/polyglot_hello_world)** — focused on breadth and variety across language families
 
 ---
 
