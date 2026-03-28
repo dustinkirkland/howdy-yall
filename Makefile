@@ -2,6 +2,32 @@ PREFIX  ?= /usr/local
 DESTDIR ?=
 UNAME_M ?= $(shell uname -m)
 
+# Auto-detect optional Chainguard/Wolfi-only tools; fold into all/test/install if present.
+HAS_DART    := $(shell command -v dart    2>/dev/null)
+HAS_NUSHELL := $(shell command -v nu      2>/dev/null)
+HAS_PWSH    := $(shell command -v pwsh    2>/dev/null)
+HAS_SCALAC  := $(shell command -v scalac  2>/dev/null)
+HAS_ZIG     := $(shell command -v zig     2>/dev/null)
+
+OPTIONAL :=
+ifneq ($(HAS_DART),)
+OPTIONAL += dart
+endif
+ifneq ($(HAS_NUSHELL),)
+OPTIONAL += nushell
+endif
+ifneq ($(HAS_PWSH),)
+OPTIONAL += pwsh
+endif
+ifneq ($(HAS_SCALAC),)
+OPTIONAL += scala
+endif
+ifneq ($(HAS_ZIG),)
+OPTIONAL += zig
+endif
+
+OPTIONAL_TESTS := $(addprefix test-,$(OPTIONAL))
+
 all: \
 	asm \
 	bash \
@@ -30,7 +56,8 @@ all: \
 	tcl \
 	typescript \
 	vala \
-	zsh
+	zsh \
+	$(OPTIONAL)
 
 deps:
 	# install build dependencies, detecting distro and package manager
@@ -173,7 +200,8 @@ test: \
 	test-tcl \
 	test-typescript \
 	test-vala \
-	test-zsh
+	test-zsh \
+	$(OPTIONAL_TESTS)
 	@echo ""
 	@echo "All tests passed!"
 
@@ -183,14 +211,6 @@ test-only-on-ubuntu: \
 	@echo ""
 	@echo "All Ubuntu-only tests passed!"
 
-test-only-on-chainguard: \
-	test-dart \
-	test-pwsh \
-	test-nushell \
-	test-scala \
-	test-zig
-	@echo ""
-	@echo "All Chainguard-only tests passed!"
 
 test-install:
 	rm -rf /tmp/howdy-install
@@ -298,9 +318,22 @@ install: all
 	echo '#!/bin/sh'                                                                > $(DESTDIR)$(PREFIX)/bin/howdy-typescript
 	echo 'exec node "$(PREFIX)/share/howdy/typescript/howdy.js"'                   >> $(DESTDIR)$(PREFIX)/bin/howdy-typescript
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-typescript
+	# Optional Chainguard/Wolfi-only languages — installed only if built.
+	@[ -f bin/howdy-dart    ] && install -m755 bin/howdy-dart    $(DESTDIR)$(PREFIX)/bin/ || true
+	@[ -f bin/howdy-nushell ] && install -m755 bin/howdy-nushell $(DESTDIR)$(PREFIX)/bin/ || true
+	@[ -f bin/howdy-pwsh    ] && install -m755 bin/howdy-pwsh    $(DESTDIR)$(PREFIX)/bin/ || true
+	@[ -f bin/howdy-zig     ] && install -m755 bin/howdy-zig     $(DESTDIR)$(PREFIX)/bin/ || true
+	@if [ -d bin/scala ]; then \
+		install -d $(DESTDIR)$(PREFIX)/share/howdy/scala; \
+		find bin/scala -name "*.class" -exec install -m644 {} $(DESTDIR)$(PREFIX)/share/howdy/scala/ \; ; \
+		find bin/scala -name "*.jar"   -exec install -m644 {} $(DESTDIR)$(PREFIX)/share/howdy/scala/ \; ; \
+		printf '#!/bin/sh\nexec java -cp $(PREFIX)/share/howdy/scala:$(PREFIX)/share/howdy/scala/* Howdy\n' \
+			> $(DESTDIR)$(PREFIX)/bin/howdy-scala; \
+		chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-scala; \
+	fi
 
 .PHONY: all deps run test test-install install clean
-.PHONY: test-only-on-ubuntu test-only-on-chainguard
+.PHONY: test-only-on-ubuntu
 .PHONY: \
 	asm \
 	bash \
