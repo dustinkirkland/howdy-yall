@@ -136,6 +136,13 @@ run: all
 	bin/howdy-typescript
 	bin/howdy-vala
 	bin/howdy-zsh
+	@[ -f bin/howdy-dart    ] && bin/howdy-dart    || true
+	@[ -f bin/howdy-mksh    ] && bin/howdy-mksh    || true
+	@[ -f bin/howdy-nushell ] && bin/howdy-nushell || true
+	@[ -f bin/howdy-pwsh    ] && bin/howdy-pwsh    || true
+	@[ -f bin/howdy-scala   ] && bin/howdy-scala   || true
+	@[ -f bin/howdy-yash    ] && bin/howdy-yash    || true
+	@[ -f bin/howdy-zig     ] && bin/howdy-zig     || true
 
 test: \
 	test-asm \
