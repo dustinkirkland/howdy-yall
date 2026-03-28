@@ -1,5 +1,6 @@
 PREFIX  ?= /usr/local
 DESTDIR ?=
+UNAME_M ?= $(shell uname -m)
 
 all: \
 	asm \
@@ -385,9 +386,17 @@ dart: | bin
 	dart compile exe dart/howdy.dart -o bin/howdy-dart
 
 asm: | bin
-	nasm -f elf64 asm/howdy.asm -o bin/howdy-asm.o
-	ld bin/howdy-asm.o -o bin/howdy-asm
-	rm bin/howdy-asm.o
+	@if [ "$(UNAME_M)" = "x86_64" ]; then \
+		nasm -f elf64 asm/howdy.asm -o bin/howdy-asm.o && \
+		ld bin/howdy-asm.o -o bin/howdy-asm && \
+		rm bin/howdy-asm.o; \
+	elif [ "$(UNAME_M)" = "aarch64" ]; then \
+		as -o bin/howdy-asm.o asm/howdy_aarch64.s && \
+		ld bin/howdy-asm.o -o bin/howdy-asm && \
+		rm bin/howdy-asm.o; \
+	else \
+		echo "asm: unsupported architecture $(UNAME_M)" && exit 1; \
+	fi
 
 c: | bin
 	gcc -o bin/howdy-c c/howdy.c
