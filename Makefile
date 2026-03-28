@@ -540,6 +540,7 @@ scala: | bin
 	JAVA_HOME= scalac -d bin/scala scala/howdy.scala
 	# copy scala*library*.jar from maven2 — both scala3-library_3 and scala-library are required
 	find /usr/share/scala/maven2 -name "scala*library*.jar" -exec cp {} bin/scala/ \;
+	@test -n "$$(ls bin/scala/*.jar 2>/dev/null)" || { echo "ERROR: no scala library JARs found in /usr/share/scala/maven2"; exit 1; }
 	echo '#!/bin/sh'                                                                     > bin/howdy-scala
 	echo 'exec java -cp "$(CURDIR)/bin/scala:$(CURDIR)/bin/scala/*" Howdy'              >> bin/howdy-scala
 	chmod 755 bin/howdy-scala
