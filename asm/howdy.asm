@@ -1,3 +1,4 @@
+; Print a howdy greeting to stdout via Linux write syscall, then exit.
 section .data
     msg db "    ====> Assembly: Howdy!", 10
     len equ $ - msg

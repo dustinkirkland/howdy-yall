@@ -1,3 +1,4 @@
+// Print a howdy greeting to stdout.
 #include <iostream>
 
 int main() {
