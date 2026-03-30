@@ -1,6 +1,6 @@
 # howdy-yall
 
-*Hello, World! — in every language.*
+*Hello, World! — in many languages.*
 
 ## Purpose
 
