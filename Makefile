@@ -36,7 +36,8 @@ endif
 
 OPTIONAL_TESTS := $(addprefix test-,$(OPTIONAL))
 
-all: \
+# Core languages always present; optional ones added when their tool is found.
+CORE_LANGS := \
 	asm \
 	bash \
 	busybox \
@@ -64,8 +65,9 @@ all: \
 	tcl \
 	typescript \
 	vala \
-	zsh \
-	$(OPTIONAL)
+	zsh
+
+all: $(CORE_LANGS) $(OPTIONAL)
 
 deps:
 	# install build dependencies, detecting distro and package manager
@@ -275,100 +277,83 @@ test-install:
 	@echo ""
 	@echo "All install tests passed!"
 
-install: all
+# ---------------------------------------------------------------------------
+# Per-language install targets: make install/howdy-<lang>
+# Each installs only the files for that one language.
+# ---------------------------------------------------------------------------
+
+# Simple binary installs — one rule template covers most languages.
+SIMPLE_INSTALL_LANGS := \
+	asm bash busybox c cpp csharp dart dash elvish fish fortran go \
+	ksh lua mksh node nushell ocaml perl php pwsh python r ruby rust \
+	scheme tcl vala yash zig zsh
+
+define simple-install-target
+install/howdy-$(1): $(1)
 	install -d $(DESTDIR)$(PREFIX)/bin
-	install -m755 \
-		bin/howdy-asm \
-		bin/howdy-bash \
-		bin/howdy-busybox \
-		bin/howdy-c \
-		bin/howdy-cpp \
-		bin/howdy-csharp \
-		bin/howdy-dash \
-		bin/howdy-elvish \
-		bin/howdy-fish \
-		bin/howdy-fortran \
-		bin/howdy-go \
-		bin/howdy-ksh \
-		bin/howdy-lua \
-		bin/howdy-node \
-		bin/howdy-ocaml \
-		bin/howdy-perl \
-		bin/howdy-php \
-		bin/howdy-python \
-		bin/howdy-r \
-		bin/howdy-ruby \
-		bin/howdy-rust \
-		bin/howdy-scheme \
-		bin/howdy-tcl \
-		bin/howdy-vala \
-		bin/howdy-zsh \
-		$(DESTDIR)$(PREFIX)/bin/
-	# NOTE: wrapper script content uses $(PREFIX) not $(DESTDIR)$(PREFIX) — DESTDIR is
-	# a staging root for packaging; at runtime the files live under $(PREFIX), not $(DESTDIR).
+	install -m755 bin/howdy-$(1) $(DESTDIR)$(PREFIX)/bin/
+endef
+$(foreach lang,$(SIMPLE_INSTALL_LANGS),$(eval $(call simple-install-target,$(lang))))
+
+# Erlang: compiled beam + wrapper script referencing the installed path.
+install/howdy-erlang: erlang
+	install -d $(DESTDIR)$(PREFIX)/bin
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/erlang
 	install -m644 bin/howdy.beam $(DESTDIR)$(PREFIX)/share/howdy/erlang/howdy.beam
-	echo '#!/bin/sh'                                                                             > $(DESTDIR)$(PREFIX)/bin/howdy-erlang
-	echo 'exec erl -noshell -pa $(PREFIX)/share/howdy/erlang -s howdy howdy -s init stop'       >> $(DESTDIR)$(PREFIX)/bin/howdy-erlang
+	printf '#!/bin/sh\nexec erl -noshell -pa %s/share/howdy/erlang -s howdy howdy -s init stop\n' \
+		"$(PREFIX)" > $(DESTDIR)$(PREFIX)/bin/howdy-erlang
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-erlang
+
+# Java: compiled class + wrapper script referencing the installed path.
+install/howdy-java: java
+	install -d $(DESTDIR)$(PREFIX)/bin
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/java
 	install -m644 bin/Howdy.class $(DESTDIR)$(PREFIX)/share/howdy/java/Howdy.class
-	echo '#!/bin/sh'                                                 > $(DESTDIR)$(PREFIX)/bin/howdy-java
-	echo 'exec java -classpath $(PREFIX)/share/howdy/java Howdy'    >> $(DESTDIR)$(PREFIX)/bin/howdy-java
+	printf '#!/bin/sh\nexec java -classpath %s/share/howdy/java Howdy\n' \
+		"$(PREFIX)" > $(DESTDIR)$(PREFIX)/bin/howdy-java
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-java
+
+# TypeScript: compiled JS + wrapper script referencing the installed path.
+install/howdy-typescript: typescript
+	install -d $(DESTDIR)$(PREFIX)/bin
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/typescript
 	install -m644 bin/typescript/howdy.js $(DESTDIR)$(PREFIX)/share/howdy/typescript/howdy.js
-	echo '#!/bin/sh'                                                                > $(DESTDIR)$(PREFIX)/bin/howdy-typescript
-	echo 'exec node "$(PREFIX)/share/howdy/typescript/howdy.js"'                   >> $(DESTDIR)$(PREFIX)/bin/howdy-typescript
+	printf '#!/bin/sh\nexec node "%s/share/howdy/typescript/howdy.js"\n' \
+		"$(PREFIX)" > $(DESTDIR)$(PREFIX)/bin/howdy-typescript
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-typescript
-	# Optional Chainguard/Wolfi-only languages — installed only if built.
-	@[ -f bin/howdy-dart    ] && install -m755 bin/howdy-dart    $(DESTDIR)$(PREFIX)/bin/ || true
-	@[ -f bin/howdy-nushell ] && install -m755 bin/howdy-nushell $(DESTDIR)$(PREFIX)/bin/ || true
-	@[ -f bin/howdy-pwsh    ] && install -m755 bin/howdy-pwsh    $(DESTDIR)$(PREFIX)/bin/ || true
-	@[ -f bin/howdy-zig     ] && install -m755 bin/howdy-zig     $(DESTDIR)$(PREFIX)/bin/ || true
-	@if [ -d bin/scala ]; then \
-		install -d $(DESTDIR)$(PREFIX)/share/howdy/scala; \
-		find bin/scala -name "*.class" -exec install -m644 {} $(DESTDIR)$(PREFIX)/share/howdy/scala/ \; ; \
-		find bin/scala -name "*.jar"   -exec install -m644 {} $(DESTDIR)$(PREFIX)/share/howdy/scala/ \; ; \
-		printf '#!/bin/sh\nexec java -cp $(PREFIX)/share/howdy/scala:$(PREFIX)/share/howdy/scala/* Howdy\n' \
-			> $(DESTDIR)$(PREFIX)/bin/howdy-scala; \
-		chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-scala; \
-	fi
+
+# Scala: bytecode + library JARs + wrapper script referencing the installed path.
+install/howdy-scala: scala
+	install -d $(DESTDIR)$(PREFIX)/bin
+	install -d $(DESTDIR)$(PREFIX)/share/howdy/scala
+	find bin/scala -name "*.class" -exec install -m644 {} $(DESTDIR)$(PREFIX)/share/howdy/scala/ \;
+	find bin/scala -name "*.jar"   -exec install -m644 {} $(DESTDIR)$(PREFIX)/share/howdy/scala/ \;
+	printf '#!/bin/sh\nexec java -cp %s/share/howdy/scala:%s/share/howdy/scala/* Howdy\n' \
+		"$(PREFIX)" "$(PREFIX)" > $(DESTDIR)$(PREFIX)/bin/howdy-scala
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-scala
+
+# Aggregate install: all core languages plus whichever optionals are present.
+INSTALL_CORE := $(addprefix install/howdy-,$(CORE_LANGS))
+INSTALL_OPT  := $(addprefix install/howdy-,$(OPTIONAL))
+
+install: $(INSTALL_CORE) $(INSTALL_OPT)
+
+# ---------------------------------------------------------------------------
+# Per-language build aliases: make build/howdy-<lang>
+# Mirrors the short build targets under a consistent howdy- namespace.
+# ---------------------------------------------------------------------------
+
+ALL_LANGS := $(CORE_LANGS) dart mksh nushell pwsh scala yash zig
+
+define build-alias-target
+build/howdy-$(1): $(1)
+endef
+$(foreach lang,$(ALL_LANGS),$(eval $(call build-alias-target,$(lang))))
+
+# ---------------------------------------------------------------------------
 
 .PHONY: all deps run test test-install install clean
-.PHONY: \
-	asm \
-	bash \
-	busybox \
-	c \
-	cpp \
-	csharp \
-	dash \
-	elvish \
-	erlang \
-	fish \
-	fortran \
-	go \
-	java \
-	ksh \
-	lua \
-	mksh \
-	node \
-	ocaml \
-	perl \
-	php \
-	python \
-	r \
-	ruby \
-	rust \
-	scala \
-	scheme \
-	tcl \
-	typescript \
-	vala \
-	yash \
-	zsh
-.PHONY: dart haskell lisp pascal pwsh nushell zig
+.PHONY: $(CORE_LANGS) dart mksh nushell pwsh scala yash zig haskell lisp pascal
 .PHONY: \
 	test-asm \
 	test-bash \
@@ -405,6 +390,8 @@ install: all
 	test-pwsh \
 	test-nushell \
 	test-zig
+.PHONY: $(INSTALL_CORE) $(addprefix install/howdy-,dart mksh nushell pwsh scala yash zig)
+.PHONY: $(addprefix build/howdy-,$(ALL_LANGS))
 
 clean:
 	rm -rf bin/
