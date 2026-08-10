@@ -15,6 +15,6 @@
 // Print a howdy greeting to stdout.
 const std = @import("std");
 
-pub fn main() !void {
-    try std.fs.File.stdout().writeAll("    ====> Zig: Howdy!\n");
+pub fn main(init: std.process.Init) !void {
+    try std.Io.File.stdout().writeStreamingAll(init.io, "    ====> Zig: Howdy!\n");
 }
