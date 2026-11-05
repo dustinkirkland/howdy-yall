@@ -34,8 +34,6 @@ ifneq ($(HAS_ZIG),)
 OPTIONAL += zig
 endif
 
-OPTIONAL_TESTS := $(addprefix test-,$(OPTIONAL))
-
 # Core languages always present; optional ones added when their tool is found.
 CORE_LANGS := \
 	asm \
@@ -68,6 +66,9 @@ CORE_LANGS := \
 	zsh
 
 all: $(CORE_LANGS) $(OPTIONAL)
+
+# Every language, whether or not its tool is present here (test, build/howdy-*).
+ALL_LANGS := $(CORE_LANGS) dart mksh nushell pwsh scala yash zig
 
 deps:
 	# install build dependencies, detecting distro and package manager
@@ -182,40 +183,21 @@ run: all
 	@[ -f bin/howdy-yash    ] && bin/howdy-yash    || true
 	@[ -f bin/howdy-zig     ] && bin/howdy-zig     || true
 
-test: \
-	test-asm \
-	test-bash \
-	test-busybox \
-	test-c \
-	test-cpp \
-	test-csharp \
-	test-dash \
-	test-elvish \
-	test-erlang \
-	test-fish \
-	test-fortran \
-	test-go \
-	test-java \
-	test-ksh \
-	test-lua \
-	test-node \
-	test-ocaml \
-	test-perl \
-	test-php \
-	test-python \
-	test-r \
-	test-ruby \
-	test-rust \
-	test-scheme \
-	test-tcl \
-	test-typescript \
-	test-vala \
-	test-zsh \
-	$(OPTIONAL_TESTS)
-	@echo ""
-	@echo "All tests passed!"
+# make test is read-only: it runs the artifacts "make all" left in bin/ as-is
+# (scratch output goes to a temp dir), so it never rebuilds, relinks or
+# modifies anything "make install" copies. It prints TAP plus an
+# automake-style summary, reports a language whose toolchain is absent as a
+# SKIP, and fails if any language fails. See tests/howdy-test.sh.
+test:
+	@sh tests/howdy-test.sh
 
+# Per-language tests: make test-<lang> (same rules as make test, one language).
+$(addprefix test-,$(ALL_LANGS)):
+	@sh tests/howdy-test.sh $(patsubst test-%,%,$@)
 
+# Check that make test leaves every file in the tree (bin/ included) unchanged.
+test-readonly:
+	@MAKE="$(MAKE)" sh tests/check-readonly.sh
 
 test-install:
 	rm -rf /tmp/howdy-install
@@ -343,8 +325,6 @@ install: $(INSTALL_CORE) $(INSTALL_OPT)
 # Mirrors the short build targets under a consistent howdy- namespace.
 # ---------------------------------------------------------------------------
 
-ALL_LANGS := $(CORE_LANGS) dart mksh nushell pwsh scala yash zig
-
 define build-alias-target
 build/howdy-$(1): $(1)
 endef
@@ -352,7 +332,7 @@ $(foreach lang,$(ALL_LANGS),$(eval $(call build-alias-target,$(lang))))
 
 # ---------------------------------------------------------------------------
 
-.PHONY: all deps run test test-install install clean
+.PHONY: all deps run test test-install test-readonly install clean
 .PHONY: $(CORE_LANGS) dart mksh nushell pwsh scala yash zig haskell lisp pascal
 .PHONY: \
 	test-asm \
@@ -605,145 +585,3 @@ scheme: | bin
 # optional script languages (not in 'all')
 lisp:
 	clisp lisp/howdy.lisp
-
-# --- test targets ---
-
-test-asm: asm
-	bin/howdy-asm | grep -F "Assembly: Howdy!"
-	@echo "PASS: asm"
-
-test-bash: bash
-	bin/howdy-bash | grep -F "Bash: Howdy!"
-	@echo "PASS: bash"
-
-test-busybox: busybox
-	bin/howdy-busybox | grep -F "BusyBox: Howdy!"
-	@echo "PASS: busybox"
-
-test-c: c
-	bin/howdy-c | grep -F "C: Howdy!"
-	@echo "PASS: c"
-
-test-cpp: cpp
-	bin/howdy-cpp | grep -F "C++: Howdy!"
-	@echo "PASS: cpp"
-
-test-csharp: csharp
-	bin/howdy-csharp | grep -F "C#: Howdy!"
-	@echo "PASS: csharp"
-
-test-dash: dash
-	bin/howdy-dash | grep -F "Dash: Howdy!"
-	@echo "PASS: dash"
-
-test-elvish: elvish
-	bin/howdy-elvish | grep -F "Elvish: Howdy!"
-	@echo "PASS: elvish"
-
-test-erlang: erlang
-	bin/howdy-erlang | grep -F "Erlang: Howdy!"
-	@echo "PASS: erlang"
-
-test-fish: fish
-	bin/howdy-fish | grep -F "Fish: Howdy!"
-	@echo "PASS: fish"
-
-test-fortran: fortran
-	bin/howdy-fortran | grep -F "Fortran: Howdy!"
-	@echo "PASS: fortran"
-
-test-go: go
-	bin/howdy-go | grep -F "Golang: Howdy!"
-	@echo "PASS: go"
-
-test-java: java
-	bin/howdy-java | grep -F "Java: Howdy!"
-	@echo "PASS: java"
-
-test-ksh: ksh
-	bin/howdy-ksh | grep -F "Ksh: Howdy!"
-	@echo "PASS: ksh"
-
-test-lua: lua
-	bin/howdy-lua | grep -F "Lua: Howdy!"
-	@echo "PASS: lua"
-
-test-mksh: mksh
-	bin/howdy-mksh | grep -F "Mksh: Howdy!"
-	@echo "PASS: mksh"
-
-test-node: node
-	bin/howdy-node | grep -F "NodeJS: Howdy!"
-	@echo "PASS: node"
-
-test-ocaml: ocaml
-	bin/howdy-ocaml | grep -F "OCaml: Howdy!"
-	@echo "PASS: ocaml"
-
-test-perl: perl
-	bin/howdy-perl | grep -F "Perl: Howdy!"
-	@echo "PASS: perl"
-
-test-php: php
-	bin/howdy-php | grep -F "PHP: Howdy!"
-	@echo "PASS: php"
-
-test-python: python
-	bin/howdy-python | grep -F "Python: Howdy!"
-	@echo "PASS: python"
-
-test-r: r
-	bin/howdy-r | grep -F "R: Howdy!"
-	@echo "PASS: r"
-
-test-ruby: ruby
-	bin/howdy-ruby | grep -F "Ruby: Howdy!"
-	@echo "PASS: ruby"
-
-test-rust: rust
-	bin/howdy-rust | grep -F "Rust: Howdy!"
-	@echo "PASS: rust"
-
-test-scheme: scheme
-	bin/howdy-scheme | grep -F "Scheme: Howdy!"
-	@echo "PASS: scheme"
-
-test-tcl: tcl
-	bin/howdy-tcl | grep -F "Tcl: Howdy!"
-	@echo "PASS: tcl"
-
-test-typescript: typescript
-	bin/howdy-typescript | grep -F "TypeScript: Howdy!"
-	@echo "PASS: typescript"
-
-test-scala: scala
-	bin/howdy-scala | grep -F "Scala: Howdy!"
-	@echo "PASS: scala"
-
-test-vala: vala
-	bin/howdy-vala | grep -F "Vala: Howdy!"
-	@echo "PASS: vala"
-
-test-yash: yash
-	bin/howdy-yash | grep -F "Yash: Howdy!"
-	@echo "PASS: yash"
-
-test-zsh: zsh
-	bin/howdy-zsh | grep -F "Zsh: Howdy!"
-	@echo "PASS: zsh"
-
-test-dart: dart
-	bin/howdy-dart | grep -F "Dart: Howdy!"
-	@echo "PASS: dart"
-
-test-pwsh: pwsh
-	bin/howdy-pwsh | grep -F "PowerShell: Howdy!"
-	@echo "PASS: pwsh"
-
-test-nushell: nushell
-	bin/howdy-nushell | grep -F "Nushell: Howdy!"
-	@echo "PASS: nushell"
-
-test-zig: zig
-	bin/howdy-zig | grep -F "Zig: Howdy!"
-	@echo "PASS: zig"
