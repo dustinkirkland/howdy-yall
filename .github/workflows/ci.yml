@@ -14,6 +14,7 @@ jobs:
       - run: make deps
       - run: make all
       - run: make test-readonly
+      - run: make test-install-artifacts
       - run: make test-install
 
   wolfi:
@@ -26,4 +27,4 @@ jobs:
       - uses: wolfi-dev/wolfi-act@main
         with:
           packages: build-base,apk-tools
-          command: unset XDG_RUNTIME_DIR && make deps && make all && make test-readonly && make test-install
+          command: unset XDG_RUNTIME_DIR && make deps && make all && make test-readonly && make test-install-artifacts && make test-install
