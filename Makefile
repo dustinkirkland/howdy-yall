@@ -76,6 +76,7 @@ deps:
 		sudo apt-get update; \
 		sudo apt-get install -y \
 			bash \
+			binutils \
 			busybox \
 			clisp \
 			dash \
@@ -94,7 +95,6 @@ deps:
 			ksh \
 			lua5.4 \
 			mksh \
-			nasm \
 			node-typescript \
 			nodejs \
 			ocaml \
@@ -112,6 +112,7 @@ deps:
 		apk add --no-cache \
 			R \
 			bash \
+			binutils \
 			build-base \
 			busybox \
 			dart \
@@ -126,7 +127,6 @@ deps:
 			guile \
 			ksh \
 			lua5.4 \
-			nasm \
 			nodejs \
 			nushell \
 			ocaml \
@@ -408,18 +408,15 @@ bin:
 dart: | bin
 	dart compile exe dart/howdy.dart -o bin/howdy-dart
 
+# asm: GNU as + ld from binutils, one source per architecture
+# (asm/howdy_x86_64.s, asm/howdy_aarch64.s).
 asm: | bin
-	@if [ "$(UNAME_M)" = "x86_64" ]; then \
-		nasm -f elf64 asm/howdy.asm -o bin/howdy-asm.o && \
-		ld bin/howdy-asm.o -o bin/howdy-asm && \
-		rm bin/howdy-asm.o; \
-	elif [ "$(UNAME_M)" = "aarch64" ]; then \
-		as -o bin/howdy-asm.o asm/howdy_aarch64.s && \
-		ld bin/howdy-asm.o -o bin/howdy-asm && \
-		rm bin/howdy-asm.o; \
-	else \
+	@if [ ! -f asm/howdy_$(UNAME_M).s ]; then \
 		echo "asm: unsupported architecture $(UNAME_M)" && exit 1; \
 	fi
+	as -o bin/howdy-asm.o asm/howdy_$(UNAME_M).s
+	ld bin/howdy-asm.o -o bin/howdy-asm
+	rm bin/howdy-asm.o
 
 c: | bin
 	gcc -o bin/howdy-c c/howdy.c
