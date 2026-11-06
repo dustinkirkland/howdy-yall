@@ -208,7 +208,19 @@ platforms.
 sudo make install                        # installs to /usr/local/bin/
 sudo make install PREFIX=/usr            # installs to /usr/bin/
 make install DESTDIR=/tmp/pkg PREFIX=/usr  # staged install for packaging
+make install/howdy-c DESTDIR=/tmp/pkg PREFIX=/usr  # one language only
 ```
+
+Install copies what `make all` built in `bin/`, unchanged, so the installed
+programs are the ones `make test` checked. `make install` first builds any
+language whose `bin/howdy-<lang>` is missing, so it still works on a fresh
+checkout; languages that are already built are not rebuilt. The per-language
+`make install/howdy-<lang>` targets never build: they fail with a message
+pointing at `make all` if the artifact is missing.
+
+`make test-install-artifacts` runs `make install` into a scratch directory and
+checks that nothing in `bin/` was rebuilt and every installed file matches its
+copy in `bin/`. CI runs it on both platforms.
 
 ### Clean
 
@@ -222,7 +234,7 @@ make clean
 
 Every push and pull request is tested on two platforms via GitHub Actions:
 
-- **Ubuntu** — `make deps` uses `apt-get`; runs `make all`, `make test-readonly` (which runs `make test`) and `make test-install`
+- **Ubuntu** — `make deps` uses `apt-get`; runs `make all`, `make test-readonly` (which runs `make test`), `make test-install-artifacts` and `make test-install`
 - **Wolfi/Chainguard** — `make deps` uses `apk`; runs the same targets, which also cover dart, pwsh, scala, nushell and zig
 
 The Makefile is the single source of truth for both dependency installation and testing.

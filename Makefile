@@ -199,6 +199,10 @@ $(addprefix test-,$(ALL_LANGS)):
 test-readonly:
 	@MAKE="$(MAKE)" sh tests/check-readonly.sh
 
+# Check that make install copies the artifacts in bin/ as-is, without a rebuild.
+test-install-artifacts:
+	@MAKE="$(MAKE)" sh tests/check-install.sh
+
 test-install:
 	rm -rf /tmp/howdy-install
 	$(MAKE) install PREFIX=/tmp/howdy-install
@@ -261,8 +265,13 @@ test-install:
 
 # ---------------------------------------------------------------------------
 # Per-language install targets: make install/howdy-<lang>
-# Each installs only the files for that one language.
+# Each installs only the files for that one language, copying what "make all"
+# already built in bin/. They never build: the installed files are the ones
+# "make test" exercised. A missing artifact is an error (run "make all" first).
 # ---------------------------------------------------------------------------
+
+# require-built: fail with a clear message unless every file in $(1) exists.
+require-built = @for f in $(1); do [ -e "$$f" ] || { echo "$@: $$f not found; run 'make all' (or 'make build/$(@:install/%=%)') first" >&2; exit 1; }; done
 
 # Simple binary installs — one rule template covers most languages.
 SIMPLE_INSTALL_LANGS := \
@@ -271,14 +280,16 @@ SIMPLE_INSTALL_LANGS := \
 	scheme tcl vala yash zig zsh
 
 define simple-install-target
-install/howdy-$(1): $(1)
+install/howdy-$(1):
+	$$(call require-built,bin/howdy-$(1))
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install -m755 bin/howdy-$(1) $(DESTDIR)$(PREFIX)/bin/
 endef
 $(foreach lang,$(SIMPLE_INSTALL_LANGS),$(eval $(call simple-install-target,$(lang))))
 
 # Erlang: compiled beam + wrapper script referencing the installed path.
-install/howdy-erlang: erlang
+install/howdy-erlang:
+	$(call require-built,bin/howdy.beam)
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/erlang
 	install -m644 bin/howdy.beam $(DESTDIR)$(PREFIX)/share/howdy/erlang/howdy.beam
@@ -287,7 +298,8 @@ install/howdy-erlang: erlang
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-erlang
 
 # Java: compiled class + wrapper script referencing the installed path.
-install/howdy-java: java
+install/howdy-java:
+	$(call require-built,bin/Howdy.class)
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/java
 	install -m644 bin/Howdy.class $(DESTDIR)$(PREFIX)/share/howdy/java/Howdy.class
@@ -296,7 +308,8 @@ install/howdy-java: java
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-java
 
 # TypeScript: compiled JS + wrapper script referencing the installed path.
-install/howdy-typescript: typescript
+install/howdy-typescript:
+	$(call require-built,bin/typescript/howdy.js)
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/typescript
 	install -m644 bin/typescript/howdy.js $(DESTDIR)$(PREFIX)/share/howdy/typescript/howdy.js
@@ -305,7 +318,8 @@ install/howdy-typescript: typescript
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/howdy-typescript
 
 # Scala: bytecode + library JARs + wrapper script referencing the installed path.
-install/howdy-scala: scala
+install/howdy-scala:
+	$(call require-built,bin/howdy-scala bin/scala/Howdy.class)
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install -d $(DESTDIR)$(PREFIX)/share/howdy/scala
 	find bin/scala -name "*.class" -exec install -m644 {} $(DESTDIR)$(PREFIX)/share/howdy/scala/ \;
@@ -318,7 +332,14 @@ install/howdy-scala: scala
 INSTALL_CORE := $(addprefix install/howdy-,$(CORE_LANGS))
 INSTALL_OPT  := $(addprefix install/howdy-,$(OPTIONAL))
 
-install: $(INSTALL_CORE) $(INSTALL_OPT)
+# make install on a fresh checkout still works: it first builds any language
+# whose bin/howdy-<lang> is missing (what "make all" would have built), then
+# installs. Languages already built are installed as-is, without a rebuild.
+install:
+	@for lang in $(CORE_LANGS) $(OPTIONAL); do \
+		[ -e bin/howdy-$$lang ] || $(MAKE) $$lang || exit 1; \
+	done
+	$(MAKE) $(INSTALL_CORE) $(INSTALL_OPT)
 
 # ---------------------------------------------------------------------------
 # Per-language build aliases: make build/howdy-<lang>
@@ -332,7 +353,7 @@ $(foreach lang,$(ALL_LANGS),$(eval $(call build-alias-target,$(lang))))
 
 # ---------------------------------------------------------------------------
 
-.PHONY: all deps run test test-install test-readonly install clean
+.PHONY: all deps run test test-install test-install-artifacts test-readonly install clean
 .PHONY: $(CORE_LANGS) dart mksh nushell pwsh scala yash zig haskell lisp pascal
 .PHONY: \
 	test-asm \
