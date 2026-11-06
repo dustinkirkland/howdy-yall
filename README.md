@@ -84,7 +84,7 @@ much faster than me at learning and writing "hello, world."
 | Bash          | `howdy-bash`        | shell    | source: `shell/howdy.sh`                        |
 | BusyBox sh    | `howdy-busybox`     | shell    | source: `shell/howdy.sh`                        |
 | C             | `howdy-c`           | compiled |                                                 |
-| C#            | `howdy-csharp`      | compiled |                                                 |
+| C#            | `howdy-csharp`      | compiled | needs a .NET runtime (8 or newer) to run        |
 | C++           | `howdy-cpp`         | compiled |                                                 |
 | Dart          | `howdy-dart`        | compiled | Chainguard only                                 |
 | Dash          | `howdy-dash`        | shell    | source: `shell/howdy.sh`                        |

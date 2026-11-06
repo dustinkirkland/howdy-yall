@@ -406,11 +406,14 @@ c: | bin
 cpp: | bin
 	g++ -o bin/howdy-cpp cpp/howdy.cpp
 
+# csharp: framework-dependent single-file publish. It embeds only apphost and
+# runs on the system .NET runtime (RollForward=Major in howdy.csproj), rather
+# than embedding singlefilehost and its bundled Brotli (CVE-2026-111497).
 csharp: | bin
 	$(eval CSHARP_TMP := $(shell mktemp -d))
 	HOME=/tmp DOTNET_CLI_HOME=/tmp dotnet publish csharp/howdy.csproj \
 		-c Release \
-		--self-contained \
+		--no-self-contained \
 		-r linux-$(shell uname -m | sed 's/x86_64/x64/;s/aarch64/arm64/') \
 		-p:PublishSingleFile=true \
 		-o $(CSHARP_TMP)
