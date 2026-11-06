@@ -158,8 +158,49 @@ make run
 ### Test (verify each binary produces correct output)
 
 ```bash
+make all
 make test
 ```
+
+`make test` runs the artifacts that `make all` left in `bin/`, exactly as
+built. It never builds, relinks or modifies anything (so it is safe to run
+between a package build and `make install`), and fails with a clear message if
+an artifact is missing. Each program runs from a scratch directory under
+`$TMPDIR`, which is also its `HOME`, so caches and crash dumps stay out of the
+tree.
+
+The output is [TAP](https://testanything.org/), one line per language, followed
+by an automake-style summary that distro test harnesses can count:
+
+```
+1..35
+ok 1 - howdy-asm
+ok 2 - howdy-bash
+...
+ok 17 - howdy-mksh # SKIP no mksh
+...
+============================================================================
+Testsuite summary for howdy-yall
+============================================================================
+# TOTAL: 35
+# PASS:  33
+# SKIP:  2
+# XFAIL: 0
+# FAIL:  0
+# XPASS: 0
+# ERROR: 0
+============================================================================
+```
+
+A language whose toolchain is absent (the build tool, if the artifact was never
+built, or the interpreter the artifact needs) is reported as a `SKIP`, not a
+pass. A failing language prints `not ok`, its output as `#` comments and a
+`FAIL: howdy-<lang>` line, and `make test` exits non-zero. `make test-<lang>`
+runs the same check for one language.
+
+`make test-readonly` records the checksum, mode, size and mtime of every file in
+the tree, runs `make test`, and fails if anything changed. CI runs it on both
+platforms.
 
 ### Install system-wide
 
@@ -181,8 +222,8 @@ make clean
 
 Every push and pull request is tested on two platforms via GitHub Actions:
 
-- **Ubuntu** — `make deps` uses `apt-get`; runs `make test` (26 languages/shells) + `make test-only-on-ubuntu`
-- **Wolfi/Chainguard** — `make deps` uses `apk`; runs `make test` (26 languages/shells) + `make test-only-on-chainguard` (dart, pwsh, scala, nushell, zig)
+- **Ubuntu** — `make deps` uses `apt-get`; runs `make all`, `make test-readonly` (which runs `make test`) and `make test-install`
+- **Wolfi/Chainguard** — `make deps` uses `apk`; runs the same targets, which also cover dart, pwsh, scala, nushell and zig
 
 The Makefile is the single source of truth for both dependency installation and testing.
 
@@ -230,18 +271,16 @@ show how each language marks code as licensed and how to document intent inline.
        chmod 755 bin/howdy-yourlang
    ```
 
-3. Add a test target:
-   ```makefile
-   test-yourlang: yourlang
-       bin/howdy-yourlang | grep -q "YourLang: Howdy!"
-       @echo "PASS: yourlang"
+3. Add a line to the table in `tests/howdy-test.sh` (expected output, build
+   tool, and run-time interpreter, `-` for none):
+   ```
+   yourlang|YourLang: Howdy!|yourcompiler|-
    ```
 
-4. Wire it in to `all:`, `test:`, and `.PHONY:`:
+4. Wire it in to `all:` (via `CORE_LANGS`), `ALL_LANGS`, and `.PHONY:`:
    ```makefile
-   all: ... yourlang
-   test: ... test-yourlang
-   .PHONY: ... yourlang test-yourlang
+   CORE_LANGS := ... yourlang
+   .PHONY: ... test-yourlang
    ```
 
 5. Add the compiler/runtime to `make deps` for each supported distro:
