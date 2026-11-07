@@ -68,6 +68,7 @@ ruby|Ruby: Howdy!|-|ruby
 rust|Rust: Howdy!|rustc|-
 scala|Scala: Howdy!|scalac|java
 scheme|Scheme: Howdy!|-|guile
+swift|Swift: Howdy!|swiftc|-
 tcl|Tcl: Howdy!|-|tclsh
 typescript|TypeScript: Howdy!|tsc|node
 vala|Vala: Howdy!|valac|-

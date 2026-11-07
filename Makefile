@@ -8,6 +8,7 @@ HAS_MKSH    := $(shell command -v mksh    2>/dev/null)
 HAS_NUSHELL := $(shell command -v nu      2>/dev/null)
 HAS_PWSH    := $(shell command -v pwsh    2>/dev/null)
 HAS_SCALAC  := $(shell command -v scalac  2>/dev/null)
+HAS_SWIFTC  := $(shell command -v swiftc  2>/dev/null)
 HAS_YASH    := $(shell command -v yash    2>/dev/null)
 HAS_ZIG     := $(shell command -v zig     2>/dev/null)
 
@@ -42,6 +43,9 @@ OPTIONAL += pwsh
 endif
 ifneq ($(HAS_SCALAC),)
 OPTIONAL += scala
+endif
+ifneq ($(HAS_SWIFTC),)
+OPTIONAL += swift
 endif
 ifneq ($(HAS_YASH),)
 OPTIONAL += yash
@@ -84,7 +88,7 @@ CORE_LANGS := \
 all: $(CORE_LANGS) $(OPTIONAL)
 
 # Every language, whether or not its tool is present here (test, build/howdy-*).
-ALL_LANGS := $(CORE_LANGS) cuda dart mksh nushell pwsh scala yash zig
+ALL_LANGS := $(CORE_LANGS) cuda dart mksh nushell pwsh scala swift yash zig
 
 deps:
 	# install build dependencies, detecting distro and package manager
@@ -293,7 +297,7 @@ require-built = @for f in $(1); do [ -e "$$f" ] || { echo "$@: $$f not found; ru
 SIMPLE_INSTALL_LANGS := \
 	asm bash busybox c cpp csharp cuda dart dash elvish fish fortran go \
 	ksh lua mksh node nushell ocaml perl php pwsh python r ruby rust \
-	scheme tcl vala yash zig zsh
+	scheme swift tcl vala yash zig zsh
 
 define simple-install-target
 install/howdy-$(1):
@@ -370,7 +374,7 @@ $(foreach lang,$(ALL_LANGS),$(eval $(call build-alias-target,$(lang))))
 # ---------------------------------------------------------------------------
 
 .PHONY: all deps run test test-install test-install-artifacts test-readonly install clean
-.PHONY: $(CORE_LANGS) cuda dart mksh nushell pwsh scala yash zig haskell lisp pascal
+.PHONY: $(CORE_LANGS) cuda dart mksh nushell pwsh scala swift yash zig haskell lisp pascal
 .PHONY: \
 	test-asm \
 	test-bash \
@@ -399,6 +403,7 @@ $(foreach lang,$(ALL_LANGS),$(eval $(call build-alias-target,$(lang))))
 	test-rust \
 	test-scala \
 	test-scheme \
+	test-swift \
 	test-tcl \
 	test-typescript \
 	test-vala \
@@ -408,7 +413,7 @@ $(foreach lang,$(ALL_LANGS),$(eval $(call build-alias-target,$(lang))))
 	test-pwsh \
 	test-nushell \
 	test-zig
-.PHONY: $(INSTALL_CORE) $(addprefix install/howdy-,cuda dart mksh nushell pwsh scala yash zig)
+.PHONY: $(INSTALL_CORE) $(addprefix install/howdy-,cuda dart mksh nushell pwsh scala swift yash zig)
 .PHONY: $(addprefix build/howdy-,$(ALL_LANGS))
 
 clean:
@@ -603,6 +608,10 @@ scala: | bin
 	echo '#!/bin/sh'                                                                     > bin/howdy-scala
 	echo 'exec java -cp "$(CURDIR)/bin/scala:$(CURDIR)/bin/scala/*" Howdy'              >> bin/howdy-scala
 	chmod 755 bin/howdy-scala
+
+# swift: optional (built when swiftc is found), compiled to a native binary.
+swift: | bin
+	swiftc -o bin/howdy-swift swift/howdy.swift
 
 vala: | bin
 	valac vala/howdy.vala -o bin/howdy-vala
