@@ -44,6 +44,7 @@ busybox|BusyBox: Howdy!|-|busybox
 c|C: Howdy!|gcc|-
 cpp|C++: Howdy!|g++|-
 csharp|C#: Howdy!|dotnet|-
+cuda|CUDA: Howdy!|nvcc|-
 dart|Dart: Howdy!|dart|-
 dash|Dash: Howdy!|-|dash
 elvish|Elvish: Howdy!|-|elvish

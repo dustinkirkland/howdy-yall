@@ -11,7 +11,23 @@ HAS_SCALAC  := $(shell command -v scalac  2>/dev/null)
 HAS_YASH    := $(shell command -v yash    2>/dev/null)
 HAS_ZIG     := $(shell command -v zig     2>/dev/null)
 
+# CUDA: nvcc is NVCC if set, else $(CUDA_HOME)/bin/nvcc if CUDA_HOME is set,
+# else nvcc on PATH, else /usr/local/cuda/bin/nvcc. NVCC_CCBIN, if set, is
+# passed as -ccbin to pick the host compiler.
+ifeq ($(origin NVCC),undefined)
+ifneq ($(CUDA_HOME),)
+NVCC := $(CUDA_HOME)/bin/nvcc
+else
+NVCC := $(or $(shell command -v nvcc 2>/dev/null),$(wildcard /usr/local/cuda/bin/nvcc),nvcc)
+endif
+endif
+NVCC_CCBIN ?=
+HAS_NVCC    := $(shell command -v $(NVCC) 2>/dev/null)
+
 OPTIONAL :=
+ifneq ($(HAS_NVCC),)
+OPTIONAL += cuda
+endif
 ifneq ($(HAS_DART),)
 OPTIONAL += dart
 endif
@@ -68,7 +84,7 @@ CORE_LANGS := \
 all: $(CORE_LANGS) $(OPTIONAL)
 
 # Every language, whether or not its tool is present here (test, build/howdy-*).
-ALL_LANGS := $(CORE_LANGS) dart mksh nushell pwsh scala yash zig
+ALL_LANGS := $(CORE_LANGS) cuda dart mksh nushell pwsh scala yash zig
 
 deps:
 	# install build dependencies, detecting distro and package manager
@@ -275,7 +291,7 @@ require-built = @for f in $(1); do [ -e "$$f" ] || { echo "$@: $$f not found; ru
 
 # Simple binary installs — one rule template covers most languages.
 SIMPLE_INSTALL_LANGS := \
-	asm bash busybox c cpp csharp dart dash elvish fish fortran go \
+	asm bash busybox c cpp csharp cuda dart dash elvish fish fortran go \
 	ksh lua mksh node nushell ocaml perl php pwsh python r ruby rust \
 	scheme tcl vala yash zig zsh
 
@@ -354,7 +370,7 @@ $(foreach lang,$(ALL_LANGS),$(eval $(call build-alias-target,$(lang))))
 # ---------------------------------------------------------------------------
 
 .PHONY: all deps run test test-install test-install-artifacts test-readonly install clean
-.PHONY: $(CORE_LANGS) dart mksh nushell pwsh scala yash zig haskell lisp pascal
+.PHONY: $(CORE_LANGS) cuda dart mksh nushell pwsh scala yash zig haskell lisp pascal
 .PHONY: \
 	test-asm \
 	test-bash \
@@ -362,6 +378,7 @@ $(foreach lang,$(ALL_LANGS),$(eval $(call build-alias-target,$(lang))))
 	test-c \
 	test-cpp \
 	test-csharp \
+	test-cuda \
 	test-dash \
 	test-elvish \
 	test-erlang \
@@ -391,7 +408,7 @@ $(foreach lang,$(ALL_LANGS),$(eval $(call build-alias-target,$(lang))))
 	test-pwsh \
 	test-nushell \
 	test-zig
-.PHONY: $(INSTALL_CORE) $(addprefix install/howdy-,dart mksh nushell pwsh scala yash zig)
+.PHONY: $(INSTALL_CORE) $(addprefix install/howdy-,cuda dart mksh nushell pwsh scala yash zig)
 .PHONY: $(addprefix build/howdy-,$(ALL_LANGS))
 
 clean:
@@ -438,6 +455,14 @@ csharp: | bin
 	cp $(CSHARP_TMP)/howdy bin/howdy-csharp
 	chmod 755 bin/howdy-csharp
 	rm -rf $(CSHARP_TMP)
+
+# cuda: optional (built when nvcc is found). howdy.cu has a real __global__
+# kernel, so the build runs nvcc's whole device toolchain (cicc, ptxas,
+# fatbinary). cudart is linked statically, so the program needs no CUDA
+# runtime library; without a GPU it prints the greeting from the host.
+cuda: | bin
+	$(NVCC) $(if $(NVCC_CCBIN),-ccbin $(NVCC_CCBIN)) -cudart static $(NVCCFLAGS) \
+		-o bin/howdy-cuda cuda/howdy.cu
 
 fortran: | bin
 	gfortran -o bin/howdy-fortran fortran/howdy.f90
