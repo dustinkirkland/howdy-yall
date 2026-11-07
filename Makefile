@@ -531,8 +531,10 @@ nushell: | bin
 	chmod 755 bin/howdy-nushell
 
 # zig: Chainguard-only (not in 'all'; tested via test-only-on-chainguard)
+# Zig's default Debug mode embeds full debug info (about 13 MB for this
+# program); ReleaseSmall is a release build and is stripped by default.
 zig: | bin
-	zig build-exe zig/howdy.zig -femit-bin=bin/howdy-zig
+	zig build-exe -O ReleaseSmall zig/howdy.zig -femit-bin=bin/howdy-zig
 
 # --- other script languages (copy + fix shebang) ---
 
