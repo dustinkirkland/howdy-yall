@@ -108,6 +108,7 @@ much faster than me at learning and writing "hello, world."
 | Rust          | `howdy-rust`        | compiled |                                                 |
 | Scala         | `howdy-scala`       | script   | Chainguard only                                 |
 | Scheme        | `howdy-scheme`      | script   | requires `guile`                                |
+| Swift         | `howdy-swift`       | compiled | needs `swiftc` to build, Swift runtime to run   |
 | Tcl           | `howdy-tcl`         | script   |                                                 |
 | TypeScript    | `howdy-typescript`  | script   | compiled to JS, run via `node`                  |
 | Vala          | `howdy-vala`        | compiled |                                                 |
