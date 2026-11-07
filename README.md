@@ -80,7 +80,7 @@ much faster than me at learning and writing "hello, world."
 
 | Language      | Binary              | Type     | Notes                                           |
 |---------------|---------------------|----------|-------------------------------------------------|
-| Assembly      | `howdy-asm`         | compiled |                                                 |
+| Assembly      | `howdy-asm`         | compiled | GNU as + ld; source: `asm/howdy_<arch>.s`       |
 | Bash          | `howdy-bash`        | shell    | source: `shell/howdy.sh`                        |
 | BusyBox sh    | `howdy-busybox`     | shell    | source: `shell/howdy.sh`                        |
 | C             | `howdy-c`           | compiled |                                                 |
