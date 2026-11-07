@@ -86,6 +86,7 @@ much faster than me at learning and writing "hello, world."
 | C             | `howdy-c`           | compiled |                                                 |
 | C#            | `howdy-csharp`      | compiled | needs a .NET runtime (8 or newer) to run        |
 | C++           | `howdy-cpp`         | compiled |                                                 |
+| CUDA          | `howdy-cuda`        | compiled | needs the CUDA toolkit; runs without a GPU      |
 | Dart          | `howdy-dart`        | compiled | Chainguard only                                 |
 | Dash          | `howdy-dash`        | shell    | source: `shell/howdy.sh`                        |
 | Elvish        | `howdy-elvish`      | shell    | source: `shell/howdy.sh`                        |
