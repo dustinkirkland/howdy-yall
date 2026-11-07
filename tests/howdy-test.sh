@@ -35,15 +35,10 @@ set -u
 srcdir=$(cd "$(dirname "$0")/.." && pwd)
 bindir="$srcdir/bin"
 
-case "$(uname -m)" in
-	aarch64) asm_tool=as ;;
-	*)       asm_tool=nasm ;;
-esac
-
 # lang | expected output | build tool | run-time tool ("-" for none)
 languages() {
 	cat <<EOF
-asm|Assembly: Howdy!|$asm_tool|-
+asm|Assembly: Howdy!|as|-
 bash|Bash: Howdy!|-|bash
 busybox|BusyBox: Howdy!|-|busybox
 c|C: Howdy!|gcc|-
